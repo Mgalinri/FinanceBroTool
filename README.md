@@ -3,26 +3,32 @@
 A tool made using the **FARM** stack for those who are looking to organize their finances.
 
 ## Table of Content
-1. Installation Guide
-2. Usage Guideline
-3. License
+1. Requirements
+2. Installation Guide
+3. Usage Guideline
+4. License
+
+## Requirements
+- MongoDB
+- Node.js (For NPM)
+- Python
 
 ## Installation Guide
 ### Backend
+Make sure you got a Virtual environment running. If you don´t run the
+following command.
+```
+cd backend
+pip install pipenv
+pipenv shell
+```
 Run the following commands to install the project in your system.
 If you have windows switch the python for py.
 ```
-cd backend
-python -m pip install Django
 pip install -r requirements.txt
+uvicorn main:app --reload
 ```
-Check the credentials on the settings.py to connect the MongoDb database.
-Then run
-```
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
-```
+
 ### Frontend
 Start from the root folder of the repository
 ```
