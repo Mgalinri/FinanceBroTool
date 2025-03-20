@@ -1,3 +1,4 @@
+from bson import ObjectId
 from model import user
 import motor.motor_asyncio
 
@@ -5,6 +6,7 @@ client = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://devs:Devel0pers12
 
 database = client.FinanceBroTool
 user_collection = database.user
+user_account_collection = database.user_account
 
 # Switch to logging user in, passing in email and pw
 async def fetch_one_user_on_email(email):
@@ -23,9 +25,14 @@ async def create_user(user):
     result = await user_collection.insert_one(document)
     return result
 
+async def create_user_account(user_acc):
+    document = user_acc
+    document["user_id"] = ObjectId(document["user_id"])
+    result = await user_account_collection.insert_one(document)
+    return result
+
 # async def update_user():
 
-# need to change to id later, mongo ObjectId is weird
 async def remove_user(id):
-    await user_collection.delete_one({"email":id})
+    await user_collection.delete_one({"_id":ObjectId(id)})
     return True

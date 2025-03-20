@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from bson.objectid import ObjectId
 
 # App object
 app = FastAPI()
@@ -16,6 +17,7 @@ from database import (
     fetch_one_user_on_email,
     fetch_all_users,
     create_user,
+    create_user_account,
     remove_user
 )
 
@@ -43,9 +45,16 @@ async def get_user_by_email(email):
         return response
     raise HTTPException(404, f"there is no users item with this email {email}")
 
-@app.post("/api/financebrotool", response_model=user)
+@app.post("/api/financebrotool/createuser", response_model=user)
 async def post_user(user: user):
     response = await create_user(user.model_dump())
+    if response:
+        return response 
+    raise HTTPException(404, "Something went wrong")
+
+@app.post("/api/financebrotool/createaccount", response_model=user_account)
+async def post_user_account(user_acc: user_account):
+    response = await create_user_account(user_acc.model_dump())
     if response:
         return response
     raise HTTPException(404, "Something went wrong")
