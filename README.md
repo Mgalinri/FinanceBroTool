@@ -6,7 +6,8 @@ A tool made using the **FARM** stack for those who are looking to organize their
 1. Requirements
 2. Installation Guide
 3. Usage Guideline
-4. License
+4. Docs and Links
+5. License
 
 ## Requirements
 - MongoDB
@@ -37,6 +38,7 @@ npm install
 npm start
 ```
 ## Usage Guideline
-
+## Docs and Links
+https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model
 ## License
 This project is licensed under the terms of the MIT license.
