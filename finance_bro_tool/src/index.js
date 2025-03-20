@@ -6,8 +6,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import Login from './pages/login';
 import SignUp from './pages/signUp';
-import Income from './pages/income'
-
+import Income from './pages/income';
+import Table from './pages/expenseTable';
+import ExpenseForm from './pages/addExpense';
 //External Imports
 import {  createBrowserRouter, RouterProvider } from "react-router";
 let router = createBrowserRouter([
@@ -25,7 +26,18 @@ let router = createBrowserRouter([
     path:"/income",
     element: <Income />
     
-  }
+  },
+  {
+    path:"/expenseTable",
+    element: <Table />
+    
+  },
+  {
+    path:"/addExpense",
+    element: <ExpenseForm />
+    
+  },
+ 
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
