@@ -37,7 +37,21 @@ cd finance_bro_tool
 npm install
 npm start
 ```
+
+### Database Setup
+On MongoDB Atlas add this connection
+ mongodb+srv://devs:Devel0pers123@farmcluster.sfelu.mongodb.net/?retryWrites=true&w=majority&appName=FARMCluster
+
 ## Usage Guideline
+To obtain a SECRET_KEY for hashing and save it in a env file.
+For hashing
+```
+openssl rand -hex 32
+```
+Also add:
+
+ALGORITHM = HS256
+
 ## Docs and Links
 https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model
 ## License
