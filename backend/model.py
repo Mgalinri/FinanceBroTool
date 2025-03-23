@@ -1,14 +1,6 @@
 from typing import Annotated
 from pydantic import BaseModel, BeforeValidator
 from bson.objectid import ObjectId
-
-# Convert ObjectId to string for Pydantic error
-def objectid_to_str(value):
-    if isinstance(value, ObjectId):
-        return str(value)
-    return value
-
-
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import(
     OAuth2PasswordBearer, 
@@ -31,9 +23,16 @@ client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_DB'))
 
 database = client.FinanceBroTool
 user_collection = database.user
+user_account_collection = database.user_account
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
+
+# Convert ObjectId to string for Pydantic error
+def objectid_to_str(value):
+    if isinstance(value, ObjectId):
+        return str(value)
+    return value
 
 #Models in Relation to User Authentication
 class Token(BaseModel):
@@ -126,6 +125,12 @@ async def create_user(user):
     user['password'] = hash
     document = user
     result = await user_collection.insert_one(document)
+    return result
+
+async def create_user_account(user_acc):
+    document = user_acc
+    document["user_id"] = ObjectId(document["user_id"])
+    result = await user_account_collection.insert_one(document)
     return result
 
 # async def update_user():
