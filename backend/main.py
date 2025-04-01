@@ -91,6 +91,7 @@ async def delete_user(id):
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
+    print(form_data)
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
