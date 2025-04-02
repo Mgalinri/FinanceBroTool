@@ -1,17 +1,16 @@
 //External Imports
-import {  Link } from "react-router";
+import {Link } from "react-router";
 
 //Internal Imports
 import TextBox  from "../components/textBoxes";
 
 //React Imports
-import { useState } from "react";
+
 
 
 function Login() {
-  async function login(info){
-   console.log(info)
-   const response = await fetch("http://localhost:8000/token", {
+  async function fetchLogin(info){
+   const response = await fetch(process.env.REACT_APP_API_URL+"/token", {
       method: "POST",
       body: info,
     });
@@ -24,12 +23,14 @@ function Login() {
      // Read the form data
      const form = e.target;
      const formData = new FormData();
+     //Handles the form information as formData
      formData.append("grant_type","password")
      formData.append("username", form.username.value);
      formData.append("password", form.password.value);
-     login(formData)
+     fetchLogin(formData)
      .then((response) => {
        if (response.status === 200) {
+        // Change were is being redirected
          alert("Login successful");
        } else {
          alert("Login failed");
