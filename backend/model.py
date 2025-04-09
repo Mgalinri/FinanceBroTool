@@ -1,11 +1,11 @@
+#Models will be in this page
+
 from typing import Annotated
 from pydantic import BaseModel, BeforeValidator
 from bson.objectid import ObjectId
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import(
     OAuth2PasswordBearer, 
- OAuth2PasswordRequestForm,
- SecurityScopes,
 )
 import jwt
 from pydantic import BaseModel
@@ -60,11 +60,29 @@ class UserInDB(BaseModel):
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-app = FastAPI()
 
+
+async def get_user(email: str):
+    """Checks if the user exists in the database by finding a user with the same email
+       Returns the user if it exists, otherwise returns None"""
+    obtain_user = await user_collection.find_one({
+        "email": email})
+   
+    if obtain_user:
+        user_dict = obtain_user
+        return UserInDB(**user_dict)
+    return None
+
+async def create_user(user):
+    """Creates a new user in the database
+    Returns the result of the insert operation"""
+    hash = get_password_hash(user['password'])
+    user['password'] = hash
+    document = user
+    result = await user_collection.insert_one(document)
+    return result
 
 def verify_password(plain_password, hashed_password):
     print(plain_password)
@@ -75,15 +93,6 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-#Check if user exists in the database
-async def get_user(email: str):
-    obtain_user = await user_collection.find_one({
-        "email": email})
-   
-    if obtain_user:
-        user_dict = obtain_user
-        return UserInDB(**user_dict)
-    return None
 
 
 async def authenticate_user( username: str, password: str):
@@ -112,20 +121,7 @@ async def fetch_one_user_on_email(email):
     user_document = await user_collection.find_one({"email": email})
     return user_document
 
-async def fetch_all_users():
-    users = []
-    cursor = user_collection.find({})
-    async for document in cursor:
-        users.append(User(**document))
-    return users
 
-async def create_user(user):
-    print(type(user['password']))
-    hash = get_password_hash(user['password'])
-    user['password'] = hash
-    document = user
-    result = await user_collection.insert_one(document)
-    return result
 
 async def create_user_account(user_acc):
     document = user_acc

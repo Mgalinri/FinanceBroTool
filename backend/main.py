@@ -1,41 +1,39 @@
-from datetime import datetime, timedelta, timezone
-from fastapi.middleware.cors import CORSMiddleware
-from bson.objectid import ObjectId
+#APIs/Views will be in this page
+
+#Python Imports
+from datetime import timedelta
 from typing import Annotated
+
+
+#Fast API imports
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import(
-    OAuth2PasswordBearer,
-    OAuth2PasswordRequestForm,)
-import os
+from fastapi.security import (OAuth2PasswordRequestForm)
+from fastapi.middleware.cors import CORSMiddleware
 
 
-# App object
-app = FastAPI()
 
+#Internal Imports
 from model import (
     User, 
-    get_current_user,
+    get_user,
     get_current_active_user,
-   Token,
-   TokenData,
-   verify_password,
-    get_password_hash,
+    Token,
     authenticate_user,
     create_access_token,
     UserInDB,
     user_account, 
-    user_espenses, 
-    category, 
-    budgeting_percentages,
     fetch_one_user_on_email,
-    fetch_all_users,
     create_user,
     create_user_account,
     remove_user
     )
 
 
+# App object
+app = FastAPI()
 
+# Handles the front-end communication with the backend
+# The origin should the same as the front-end address
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=["http://localhost:3000"],
@@ -46,33 +44,39 @@ app.add_middleware(
 
 
 
+# Token Settings
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+    
 
-@app.get("/")
-def read_root():
-    return {"Ping":"pong"}
-
-@app.get("/api/financebrotool")
-async def get_all_users():
-    response = await fetch_all_users()
-    return response
+@app.post("/api/financebrotool", response_model=User)
+async def register_user(user: UserInDB): 
+    """Creates a new user in the database, receives the user model"""
+     #Converts the user model to a dictionary
+    existing_user = await get_user(user.email) #Check if the user already exists in the database, returns None if it does not
+    if existing_user!=None:  
+        print("User already exists")
+        raise HTTPException(status_code=400, detail="User already exists with this email") #Returns an error if the user already exists
+    else:
+        response = await create_user(user.model_dump())
+        if response:
+            return response 
+        raise HTTPException(status_code=404, detail="Something went wrong")
+    
+    
 
 @app.get("/api/financebrotool{email}", response_model=User)
 async def get_user_by_email(email):
-    response = await fetch_one_user_on_email(email)
+    response = await get_user(email)
     if response:
         return response
     raise HTTPException(404, f"there is no users item with this email {email}")
 
-#Work on this
-@app.post("/api/financebrotool", response_model=User)
-async def post_user(user: UserInDB): 
-    response = await create_user(user.model_dump())
-    if response:
-        return response 
-    raise HTTPException(404, "Something went wrong")
 
+
+
+#Grayson added this endpoint to create a user account
+#Check how it would be used
 @app.post("/api/financebrotool/createaccount", response_model=user_account)
 async def post_user_account(user_acc: user_account):
     response = await create_user_account(user_acc.model_dump())

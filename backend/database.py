@@ -1,6 +1,4 @@
-from bson import ObjectId
-from model import User
-import motor.motor_asyncio
+#Connects to mongodb database
 from dotenv import load_dotenv
 #Turn this into environment variable
 load_dotenv()
