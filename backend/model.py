@@ -63,10 +63,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-
+#Function to obtain the user
 async def get_user(email: str):
-    """Checks if the user exists in the database by finding a user with the same email
-       Returns the user if it exists, otherwise returns None"""
+    """
+    Checks if the user exists in the database by finding a user with the same email\n
+    Parameters
+    email (str): The email of the user to be found\n
+    Return
+    the user as a pydantic model if it exists, otherwise returns None"""
     obtain_user = await user_collection.find_one({
         "email": email})
    
@@ -75,22 +79,42 @@ async def get_user(email: str):
         return UserInDB(**user_dict)
     return None
 
+# Functions for adding a new user to the database
 async def create_user(user):
-    """Creates a new user in the database
-    Returns the result of the insert operation"""
+    """Creates a new user in the database\n
+    Parameters
+    user (dict) : The user model data\n
+    Return
+    The added user document"""
     hash = get_password_hash(user['password'])
     user['password'] = hash
     document = user
     result = await user_collection.insert_one(document)
     return result
 
+def get_password_hash(password):
+    """Hashes the password using bcrypt algorithm \n
+    Parameters
+    password (str): The password to be hashed\n
+    Returns the hashed password"""
+    return pwd_context.hash(password)
+
+
 def verify_password(plain_password, hashed_password):
+    """
+    Verifies the password using bcrypt algorithm\n
+
+    Args:
+        plain_password (_type_): _description_
+        hashed_password (bool): _description_
+
+    Returns:
+        _type_: _description_
+    """
     print(plain_password)
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
 
 
 
