@@ -29,12 +29,6 @@ user_account_collection = database.user_account
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
 
-# Convert ObjectId to string for Pydantic error
-def objectid_to_str(value):
-    if isinstance(value, ObjectId):
-        return str(value)
-    return value
-
 #Models in Relation to User Authentication
 class Token(BaseModel):
     access_token: str
@@ -48,6 +42,7 @@ class User(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     income: int | None = None
+    percentages: object | None = None
 
 class UserInDB(BaseModel):
     email: str | None = None
@@ -56,6 +51,7 @@ class UserInDB(BaseModel):
     disabled: bool | None = None
     password: str
     income: int | None = None
+    percentages: object | None = None
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -102,6 +98,16 @@ async def set_user_income(email, income):
     
     return JSONResponse(content={"message": "Income updated successfully", "modified_count": result.modified_count})
 
+async def set_user_percentages(email, percentages):
+    result = await user_collection.update_one(
+        {"email": email},
+        {"$set": {"percentages": percentages}}
+    )
+
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found or percentages already up to date")
+    
+    return JSONResponse(content={"message": "Percentages updated successfully", "modified_count": result.modified_count})
 
 def get_password_hash(password):
     """Hashes the password using bcrypt algorithm \n
