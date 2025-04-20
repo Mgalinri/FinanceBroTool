@@ -1,10 +1,8 @@
 function Grid(){
-   const categories = {"item 1": ["Housing","bg-primary"],
-                       "item 2": ["Schooling","bg-secondary"],
-                       "item 3": ["Transportation", "bg-primary"],
-                       "item 4": ["Healthcare","bg-secondary"],
-                       "item 5": ["Entertainment","bg-primary"],
-                       "item 6" : ["Miscellaneous","bg-primary"]}
+   const categories = {"item 1": ["Essential Needs","bg-primary"],
+                       "item 2": ["Savings","bg-secondary"],
+                       "item 3": ["Splurges/Wants", "bg-primary"],
+                     }
    
    
    return (

@@ -1,6 +1,7 @@
 #Models will be in this page
 
 from typing import Annotated
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, BeforeValidator
 from bson.objectid import ObjectId
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -19,7 +20,7 @@ from passlib.context import CryptContext
 from dotenv import load_dotenv
 #Turn this into environment variable
 load_dotenv()
-client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_DB'))
+client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_URI'))
 
 database = client.FinanceBroTool
 user_collection = database.user
@@ -39,17 +40,14 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-
 class TokenData(BaseModel):
     username: str | None = None
-
 
 class User(BaseModel):
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
-    
-
+    income: int | None = None
 
 class UserInDB(BaseModel):
     email: str | None = None
@@ -57,6 +55,7 @@ class UserInDB(BaseModel):
     last_name: str | None = None
     disabled: bool | None = None
     password: str
+    income: int | None = None
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -91,6 +90,18 @@ async def create_user(user):
     document = user
     result = await user_collection.insert_one(document)
     return result
+
+async def set_user_income(email, income):
+    result = await user_collection.update_one(
+        {"email": email},
+        {"$set": {"income": income}}
+    )
+
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found or income already up to date")
+    
+    return JSONResponse(content={"message": "Income updated successfully", "modified_count": result.modified_count})
+
 
 def get_password_hash(password):
     """Hashes the password using bcrypt algorithm \n
@@ -188,30 +199,3 @@ async def get_current_active_user(
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
-
-#Models created by Grayson for MongoDB
-#Check which class are we keeping
-
-    
-class user_account(BaseModel):
-    # FK
-    user_id: Annotated[str, BeforeValidator(objectid_to_str)]
-    amount: float
-
-class category(BaseModel):
-    category_name: str
-
-class user_espenses(BaseModel):
-    # FK
-    user_id: Annotated[str, BeforeValidator(objectid_to_str)]
-    # FK
-    category_id: Annotated[str, BeforeValidator(objectid_to_str)]
-
-class budgeting_percentages(BaseModel):
-    # FK
-    user_id: Annotated[str, BeforeValidator(objectid_to_str)]
-    # FK
-    category_id: Annotated[str, BeforeValidator(objectid_to_str)]
-    # not sure what budgeting percentages means ngl
-    assigned_percentages: int

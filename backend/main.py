@@ -21,10 +21,10 @@ from model import (
     authenticate_user,
     create_access_token,
     UserInDB,
-    user_account, 
     create_user,
     create_user_account,
-    remove_user
+    remove_user,
+    set_user_income
     )
 
 
@@ -46,9 +46,7 @@ app.add_middleware(
 # Token Settings
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-    
-
-@app.post("/api/financebrotool", response_model=User)
+@app.post("/api/financebrotool/createaccount", response_model=User)
 async def register_user(user: UserInDB): 
     """To create a user account in the database
 
@@ -66,7 +64,29 @@ async def register_user(user: UserInDB):
             return response 
         raise HTTPException(status_code=404, detail="Something went wrong")
     
-    
+@app.post("/api/financebrotool/setincome")
+async def set_income(payload: dict): 
+    """To create a user account in the database
+
+    Args:
+        user (UserInDB): _description_
+    """
+    email = payload.get("email")
+    print(email)
+    income = payload.get("income")
+    print(income)
+
+    if not email or income is None:
+        raise HTTPException(status_code=400, detail="Email and income are required")
+
+    user = await get_user(email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    response = await set_user_income(email, income)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
 
 @app.get("/api/financebrotool{email}", response_model=User)
 async def get_user_by_email(email):
@@ -122,18 +142,6 @@ async def login_for_access_token(
         data={"email": user.email}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-
-#Grayson added this endpoint to create a user account
-#Check how it would be used
-@app.post("/api/financebrotool/createaccount", response_model=user_account)
-async def post_user_account(user_acc: user_account):
-    response = await create_user_account(user_acc.model_dump())
-    if response:
-        return response
-    raise HTTPException(404, "Something went wrong")
-
-
 
 @app.get("/users/me/", response_model=User)
 async def read_users_me(

@@ -1,4 +1,5 @@
 //React Imports
+import { useNavigate } from "react-router-dom";
 
 //External Imports
 import {  Link } from "react-router";
@@ -7,8 +8,10 @@ import {  Link } from "react-router";
 import TextBox  from "../components/textBoxes";
 //Add SignUp
 function SignUp() {
+  const navigate = useNavigate();
+  
   async function fetchAdd(info){
-    const response = await fetch(process.env.REACT_APP_API_URL+"/api/financebrotool", {
+    const response = await fetch(process.env.REACT_APP_API_URL+"/api/financebrotool/createaccount", {
        method: "POST",
        headers: {
          "Content-Type": "application/json",
@@ -38,6 +41,8 @@ function SignUp() {
        if (response.status === 200) {
         // Change were is being redirected
          alert("Sign Up successful");
+         localStorage.setItem("storedEmail", form.email.value);
+         navigate("/income");
        } else {
          alert("Sign Up  failed");
        }

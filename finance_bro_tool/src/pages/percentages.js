@@ -5,7 +5,7 @@ import {  Link } from "react-router";
 import Grid from "../components/grid";
 
 
-function Table() {
+function Percentages() {
     
   return (
     <div className="flex flex-col  items-center justify-center   h-screen w-100">
@@ -14,10 +14,9 @@ function Table() {
        <h1 className="text-secondary text-2xl font-black  mb-10">What Percentage Do You Want to Assign into the Following?</h1>
     </header>
     
-        
    <Grid />
-   <Link  className="w-full flex justify-end" to="/addExpense">
-    <button className="bg-secondary font-black  mt-6 w-1/3 rounded-r-3xl  h-12 text-white ">Next</button>
+   <Link  className="w-full flex justify-end" to="/dashboard">
+    <button className="bg-secondary font-black  mt-6 w-1/3 rounded-r-3xl  h-12 text-white ">Complete</button>
     </Link>
     </div>
  </div>
@@ -25,4 +24,4 @@ function Table() {
   );
 }
 
-export default Table;
+export default Percentages;
