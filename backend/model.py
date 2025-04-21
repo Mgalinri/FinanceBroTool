@@ -24,7 +24,7 @@ client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_URI'))
 
 database = client.FinanceBroTool
 user_collection = database.user
-user_account_collection = database.user_account
+user_expense_collection = database.user_expenses
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
@@ -53,6 +53,11 @@ class UserInDB(BaseModel):
     income: int | None = None
     percentages: object | None = None
 
+class UserExpensesInDB(BaseModel):
+    userid: str | None = None
+    category: str | None = None
+    description: str | None = None
+    amount: int | None = None
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -109,6 +114,11 @@ async def set_user_percentages(email, percentages):
     
     return JSONResponse(content={"message": "Percentages updated successfully", "modified_count": result.modified_count})
 
+async def set_user_expense(user_expense_doc):
+    result = await user_expense_collection.insert_one(user_expense_doc)
+
+    return result
+
 def get_password_hash(password):
     """Hashes the password using bcrypt algorithm \n
     Parameters
@@ -131,11 +141,6 @@ def verify_password(plain_password, hashed_password):
     print(plain_password)
     return pwd_context.verify(plain_password, hashed_password)
 
-
-
-
-
-
 async def authenticate_user( username: str, password: str):
     user = await get_user(username)
     if not user:
@@ -143,8 +148,6 @@ async def authenticate_user( username: str, password: str):
     if not verify_password(password, user.password):
         return False
     return user
-
-
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
@@ -161,14 +164,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 async def fetch_one_user_on_email(email):
     user_document = await user_collection.find_one({"email": email})
     return user_document
-
-
-
-async def create_user_account(user_acc):
-    document = user_acc
-    document["user_id"] = ObjectId(document["user_id"])
-    result = await user_account_collection.insert_one(document)
-    return result
 
 # async def update_user():
 

@@ -1,3 +1,6 @@
+//React Imports
+import { useNavigate } from "react-router-dom";
+
 //External Imports
 import {Link } from "react-router";
 
@@ -9,6 +12,8 @@ import TextBox  from "../components/textBoxes";
 
 
 function Login() {
+  const navigate = useNavigate();
+
   async function fetchLogin(info){
    const response = await fetch(process.env.REACT_APP_API_URL+"/token", {
       method: "POST",
@@ -28,14 +33,20 @@ function Login() {
      formData.append("username", form.username.value);
      formData.append("password", form.password.value);
      fetchLogin(formData)
-     .then((response) => {
-       if (response.status === 200) {
-        // Change were is being redirected
+     .then((response) => response.json())
+     .then((data) => {
+       if (data.access_token) {
+         localStorage.setItem("token", data.access_token);
          alert("Login successful");
+         navigate("/dashboard");
        } else {
          alert("Login failed");
        }
      })
+     .catch((error) => {
+       console.error("Login error:", error);
+       alert("Login failed");
+     });
     
   }
   

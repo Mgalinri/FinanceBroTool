@@ -22,10 +22,11 @@ from model import (
     create_access_token,
     UserInDB,
     create_user,
-    create_user_account,
     remove_user,
     set_user_income,
-    set_user_percentages
+    set_user_percentages,
+    UserExpensesInDB,
+    set_user_expense
     )
 
 
@@ -67,11 +68,6 @@ async def register_user(user: UserInDB):
     
 @app.post("/api/financebrotool/setincome")
 async def set_income(payload: dict): 
-    """To create a user account in the database
-
-    Args:
-        user (UserInDB): _description_
-    """
     email = payload.get("email")
     print(email)
     income = payload.get("income")
@@ -91,11 +87,6 @@ async def set_income(payload: dict):
 
 @app.post("/api/financebrotool/setpercentages")
 async def set_percentages(payload: dict): 
-    """To create a user account in the database
-
-    Args:
-        user (UserInDB): _description_
-    """
     email = payload.get("email")
     print(email)
     percentages = payload.get("percentages")
@@ -109,6 +100,21 @@ async def set_percentages(payload: dict):
         raise HTTPException(status_code=404, detail="User not found")
 
     response = await set_user_percentages(email, percentages)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.post("/api/financebrotool/addexpense", response_model=UserExpensesInDB)
+async def add_expense(user_expense: UserExpensesInDB): 
+
+    # if not email or percentages is None:
+    #     raise HTTPException(status_code=400, detail="Email and percentages are required")
+
+    # user = await get_user(userid)
+    # if user is None:
+    #     raise HTTPException(status_code=404, detail="User not found")
+
+    response = await set_user_expense(user_expense.model_dump())
     if response:
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
