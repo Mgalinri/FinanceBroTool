@@ -5,6 +5,12 @@ import { Link } from "react-router-dom";
 //Internal Imports
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
+
+
+//To-do: Add a graph for Essential needs
+// To-do: Add a graph for Savings
+// To-do: Add a graph for Splurges/Wants
+// To-do: Change the modal for react components
 function Dashboard() {
   return (
   
@@ -12,7 +18,7 @@ function Dashboard() {
         <MenuBar/>
         <Add />
       
-     
+    
     </div>
   );
 }
