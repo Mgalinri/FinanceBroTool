@@ -29,16 +29,16 @@ function ExpenseForm() {
 
     // Read the form data
     const form = e.target;
-    // const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-    // // if (!token) {
-    // //   alert("No token found");
-    // //   return;
-    // // }
+    if (!token) {
+      alert("No token found");
+      return;
+    }
 
-    // const decoded = jwtDecode(token);
+    const decoded = jwtDecode(token);
 
-    // console.log(decoded.userid);
+    console.log(decoded.email);
 
     console.log("Form data:", form);
     console.log("Category selected:", form.categories.value);
@@ -46,7 +46,7 @@ function ExpenseForm() {
     console.log("Amount entered:", form.amount.value);
 
     const body = JSON.stringify({
-      "userid": "68048ba3ecfa5dc3a337c6b6",
+      "userid": decoded.email,
       "category": form.categories.value,
       "description": form.description.value,
       "amount": parseInt(form.amount.value),

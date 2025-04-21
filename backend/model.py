@@ -20,7 +20,7 @@ from passlib.context import CryptContext
 from dotenv import load_dotenv
 #Turn this into environment variable
 load_dotenv()
-client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_DB'))
+client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_URI'))
 
 database = client.FinanceBroTool
 user_collection = database.user

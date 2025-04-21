@@ -44,13 +44,13 @@ function Login() {
      fetchLogin(formData)
      .then((response) => response.json())
      .then((data) => {
-       if (data.access_token) {
-         localStorage.setItem("token", data.access_token);
-         alert("Login successful");
-         navigate("/dashboard");
-       } else {
-         alert("Login failed");
-       }
+      if (data.access_token) {
+        localStorage.setItem("token", data.access_token);
+        alert("Login successful");
+        navigate("/dashboard");
+      } else {
+        alert("Login failed");
+      }
      })
      .catch((error) => {
        console.error("Login error:", error);
@@ -72,9 +72,7 @@ function Login() {
      <TextBox id_="password" label="password" placeholder="****" type="password"/>
      
      <div className="flex flex-col items-center w-1/2 justify-center p-4 gap-2">
-     <Link className="w-full" to="/dashboard">
      <button className="bg-secondary font-bold  text-white w-full p-2 rounded-lg" type="submit">Sign In</button>
-     </Link>
         
      <Link className="w-full" to="/signUp">
      <button  className="bg-secondary   font-bold text-white w-full p-2 rounded-lg">Sign Up</button>
