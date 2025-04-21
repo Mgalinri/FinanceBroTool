@@ -11,8 +11,11 @@ import Percentages from './pages/percentages';
 import ExpenseForm from './pages/addExpense';
 import Dashboard from './pages/dashboard';
 import Page404 from './pages/404';
+import ExpenseTable from './pages/expenses';
+
 //External Imports
 import {  createBrowserRouter, RouterProvider } from "react-router";
+
 let router = createBrowserRouter([
  
   {
@@ -26,6 +29,7 @@ let router = createBrowserRouter([
       {path: 'income', element: <Income /> },
       {path: 'percentages', element: <Percentages /> },
       {path: 'addExpense', element: <ExpenseForm /> },
+      {path: 'expenseTable', element: <ExpenseTable />}
     ],
    
 

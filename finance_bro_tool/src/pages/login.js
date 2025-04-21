@@ -21,17 +21,26 @@ function Login() {
     });
     return Promise.resolve(response);
   }
+
+  function prepareFormData(e){
+    /*Prepares the data before being sent to the api*/
+    const form = e.target;
+    const formData = new FormData();
+    //Handles the form information as formData
+    formData.append("grant_type","password")
+    formData.append("username", form.username.value);
+    formData.append("password", form.password.value);
+    return formData
+  }
+
   function handleSubmit(e){
+    /*Handles the response to submitting the login */
     // Prevent the browser from reloading the page
     e.preventDefault();
    
      // Read the form data
-     const form = e.target;
-     const formData = new FormData();
-     //Handles the form information as formData
-     formData.append("grant_type","password")
-     formData.append("username", form.username.value);
-     formData.append("password", form.password.value);
+    const formData = prepareFormData(e)
+
      fetchLogin(formData)
      .then((response) => response.json())
      .then((data) => {
