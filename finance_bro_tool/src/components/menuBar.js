@@ -1,10 +1,38 @@
+//External imports
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import { Link } from 'react-router';
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+
+
+//To-do: Add functionality to the logout button
+//To-do: Add functionality to the settings, they must allow for a change in the percentage
 function MenuBar(){
  return (
- <div className="bg-primary text-white h-full w-24 p-4">
- <button>
-    <i link="finance_bro_tool\src\dashboard_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"></i>
- </button>
+ <div className="bg-primary text-white flex flex-col items-center justify-start h-full w-24 p-4 pt-6 pb-6">
+   <Link to="/dashboard">
+   <DashboardIcon fontSize='large'/>
+   </Link>
+   <Link to="/expenseTable">
+   <TableRowsIcon fontSize='large'/>
+   </Link>
+   <button className="mt-auto mb-4">
+   <LogoutIcon fontSize='large'/>
+   </button>
+   <Popup
+                  trigger={  <SettingsIcon fontSize='large'/>}
+                  modal
+                  nested
+                  position="right center"
+                >
+      
+    </Popup>
  <button></button>
- </div>)
+
+ </div>
+ )
 }
 export default MenuBar;

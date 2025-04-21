@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Grid from "../components/grid";
 
 
+//To-do: make a component out of this for pop-ups
+
 function Percentages() {
   const navigate = useNavigate();
 
