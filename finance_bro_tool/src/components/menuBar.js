@@ -6,11 +6,19 @@ import TableRowsIcon from '@mui/icons-material/TableRows';
 import { Link } from 'react-router';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import { useNavigate } from 'react-router-dom';
 
-
-//To-do: Add functionality to the logout button
 //To-do: Add functionality to the settings, they must allow for a change in the percentage
-function MenuBar(){
+function MenuBar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?") === true){
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
+
  return (
  <div className="bg-primary text-white flex flex-col items-center justify-start h-full w-24 p-4 pt-6 pb-6">
    <Link to="/dashboard">
@@ -19,7 +27,7 @@ function MenuBar(){
    <Link to="/expenseTable">
    <TableRowsIcon fontSize='large'/>
    </Link>
-   <button className="mt-auto mb-4">
+   <button className="mt-auto mb-4" onClick={handleLogout}>
    <LogoutIcon fontSize='large'/>
    </button>
    <Popup
