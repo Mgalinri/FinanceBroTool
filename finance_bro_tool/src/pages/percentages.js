@@ -61,8 +61,8 @@ function Percentages() {
   
     fetchAdd(body).then((response) => {
       if (response.status === 200) {
-        alert("Percentages Added");
-        navigate("/dashboard");
+        alert("Signup Complete. You will now be redirected to login.");
+        navigate("/login");
       } else {
         alert("Percentages Failed to Add");
       }

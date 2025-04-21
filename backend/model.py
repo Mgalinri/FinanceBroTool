@@ -1,5 +1,3 @@
-#Models will be in this page
-
 from typing import Annotated
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, BeforeValidator
@@ -29,7 +27,8 @@ user_expense_collection = database.user_expenses
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
 
-#Models in Relation to User Authentication
+# Models
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -62,8 +61,8 @@ class UserExpensesInDB(BaseModel):
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+# Obtain User Via Email
 
-#Function to obtain the user
 async def get_user(email: str):
     """
     Checks if the user exists in the database by finding a user with the same email\n
@@ -79,7 +78,8 @@ async def get_user(email: str):
         return UserInDB(**user_dict)
     return None
 
-# Functions for adding a new user to the database
+# Register User
+
 async def create_user(user):
     """Creates a new user in the database\n
     Parameters
@@ -119,27 +119,7 @@ async def set_user_expense(user_expense_doc):
 
     return result
 
-def get_password_hash(password):
-    """Hashes the password using bcrypt algorithm \n
-    Parameters
-    password (str): The password to be hashed\n
-    Returns the hashed password"""
-    return pwd_context.hash(password)
-
-
-def verify_password(plain_password, hashed_password):
-    """
-    Verifies the password using bcrypt algorithm\n
-
-    Args:
-        plain_password (_type_): _description_
-        hashed_password (bool): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    print(plain_password)
-    return pwd_context.verify(plain_password, hashed_password)
+# User Authentication
 
 async def authenticate_user( username: str, password: str):
     user = await get_user(username)
@@ -165,9 +145,29 @@ async def fetch_one_user_on_email(email):
     user_document = await user_collection.find_one({"email": email})
     return user_document
 
-# async def update_user():
+def get_password_hash(password):
+    """Hashes the password using bcrypt algorithm \n
+    Parameters
+    password (str): The password to be hashed\n
+    Returns the hashed password"""
+    return pwd_context.hash(password)
 
-# need to change to id later, mongo ObjectId is weird
+
+def verify_password(plain_password, hashed_password):
+    """
+    Verifies the password using bcrypt algorithm\n
+
+    Args:
+        plain_password (_type_): _description_
+        hashed_password (bool): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    print(plain_password)
+    return pwd_context.verify(plain_password, hashed_password)
+
+# Extras we may not need
 
 #Search for the user first through a query, then delete the user
 async def remove_user(id):

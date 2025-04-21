@@ -4,13 +4,10 @@
 from datetime import timedelta
 from typing import Annotated
 
-
 #Fast API imports
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import (OAuth2PasswordRequestForm)
 from fastapi.middleware.cors import CORSMiddleware
-
-
 
 #Internal Imports
 from model import (
@@ -29,7 +26,6 @@ from model import (
     set_user_expense
     )
 
-
 # App object
 app = FastAPI()
 
@@ -43,10 +39,10 @@ app.add_middleware(
     allow_headers = ['*'],
 )
 
-
-
 # Token Settings
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Register User
 
 @app.post("/api/financebrotool/createaccount", response_model=User)
 async def register_user(user: UserInDB): 
@@ -104,6 +100,8 @@ async def set_percentages(payload: dict):
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
+# Add Expense
+
 @app.post("/api/financebrotool/addexpense", response_model=UserExpensesInDB)
 async def add_expense(user_expense: UserExpensesInDB): 
 
@@ -119,31 +117,7 @@ async def add_expense(user_expense: UserExpensesInDB):
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
-@app.get("/api/financebrotool{email}", response_model=User)
-async def get_user_by_email(email):
-    """Finds the user in mongo with help of the email
-
-    Args
-        email (_type_): _description_
-
-    Raises
-        HTTPException: 404 if the user is not found in the database
-
-    Returns
-        _type_: json object of the user
-    """
-    response = await get_user(email)
-    if response:
-        return response
-    raise HTTPException(404, f"there is no users item with this email {email}")
-
-
-@app.delete("/api/financebrotool{id}")
-async def delete_user(id):
-    response = await remove_user(id)
-    if response:
-        return "Successfully deleted user!"
-    raise HTTPException(404, f"there is no user item with this id {id}")
+# Authenticate User
 
 @app.post("/token")
 async def login_for_access_token(
@@ -174,6 +148,26 @@ async def login_for_access_token(
     )
     return Token(access_token=access_token, token_type="bearer")
 
+# Extras
+
+@app.get("/api/financebrotool{email}", response_model=User)
+async def get_user_by_email(email):
+    """Finds the user in mongo with help of the email
+
+    Args
+        email (_type_): _description_
+
+    Raises
+        HTTPException: 404 if the user is not found in the database
+
+    Returns
+        _type_: json object of the user
+    """
+    response = await get_user(email)
+    if response:
+        return response
+    raise HTTPException(404, f"there is no users item with this email {email}")
+
 @app.get("/users/me/", response_model=User)
 async def read_users_me(
     current_user: Annotated[User, Depends(get_current_active_user)],
@@ -186,3 +180,10 @@ async def read_own_items(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     return [{"item_id": "Foo", "owner": current_user.email}]
+
+@app.delete("/api/financebrotool{id}")
+async def delete_user(id):
+    response = await remove_user(id)
+    if response:
+        return "Successfully deleted user!"
+    raise HTTPException(404, f"there is no user item with this id {id}")
