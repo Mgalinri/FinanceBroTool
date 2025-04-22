@@ -25,11 +25,11 @@ function Grid() {
   };
 
   return (
-    <div className="grid grid-cols-2 w-full gap-y-4">
+    <div className="grid grid-cols-2 w-inherit gap-y-4">
       {Object.entries(categories).map(([key, value]) => (
         <React.Fragment key={key}>
           <label
-            className={`text-white h-16 font-bold pl-8 border-black rounded-l-lg border-solid   flex justify-start items-center ${value[1]}`}
+            className={`text-white h-16 font-bold pl-8 border-black rounded-l-lg border-solid   flex justify-start items-center ${value[1]} p-4`}
           >
             {value[0]}
           </label>

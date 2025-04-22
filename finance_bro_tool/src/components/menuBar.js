@@ -12,7 +12,8 @@ import PercentagePopUp from './percentagePopUp';
 //To-do: Add functionality to the settings, they must allow for a change in the percentage
 function MenuBar() {
   const navigate = useNavigate();
-
+  const contentStyle = { background: 'transparent', border:'none'};
+  const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
   //Function to handle logout
 
   async function fetchLogout(){
@@ -45,6 +46,7 @@ function MenuBar() {
                   modal
                   nested
                   position="right center"
+                  {...{contentStyle, overlayStyle }}
                 >
          <PercentagePopUp/>
     </Popup>

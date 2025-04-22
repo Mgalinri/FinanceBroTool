@@ -147,7 +147,10 @@ async def set_user_expense(user_expense_doc):
     return result
 
 # User Authentication
-
+async def delete_expense(email, category, description, amount):
+    """Maybe we need to add a date field to the expenses\n"""
+    result = await user_expense_collection.delete_one({"email": email, "category": category, "description": description, "amount": amount})
+    return result
 async def authenticate_user( username: str, password: str):
     user = await get_user(username)
     if not user:

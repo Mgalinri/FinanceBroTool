@@ -12,7 +12,7 @@ export default function TextBox(props) {
         type={props.type}
         name={props.id_}
         placeholder={props.placeholder}
-        className="border w-full  border-gray-300 p-2 rounded-lg"
+        className={"border w-full  border-gray-300 p-2 rounded-lg"+props.classes}
       />
     </div>
   );

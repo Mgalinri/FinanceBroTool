@@ -28,7 +28,8 @@ from model import (
     set_user_percentages,
     UserExpensesInDB,
     set_user_expense,
-    get_expenses
+    get_expenses,
+    delete_expense
     )
 
 # App object
@@ -141,6 +142,18 @@ async def add_expense(current_user: Annotated[User, Depends(get_current_active_u
     if response:
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.post("/api/financebrotool/deletexpense", response_model=UserExpensesInDB)
+async def delete_expense(current_user: Annotated[User, Depends(get_current_active_user)],user_expense: UserExpensesInDB):
+    """To delete a user expense from the database
+
+    Args:
+        user (UserInDB): _description_
+    """
+     #Converts the user model to a dictionary
+    existing_user = await get_user(current_user.email)
+    deleted_expense = await delete_expense(current_user.email,user_expense.category,user_expense.description,user_expense.amount) #Check if the user already exists in the database, returns None if it does not
+    return deleted_expense
 
 @app.get("/api/financebrotool/getexpenses/",  response_model=List[UserExpensesInDB])
 async def get_expenses_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):

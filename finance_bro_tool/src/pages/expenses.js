@@ -21,7 +21,7 @@ function ExpenseTable() {
   const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
   const [expenses, setExpenses] = useState([]);
   //const [email, setEmail] = useState("");
-
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     
@@ -74,14 +74,19 @@ function ExpenseTable() {
           <tbody>
             {expenses.map((item) => (
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-              <th
+              
+              <td
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >{item.category}
-              </th>
+              >
+                <button onClick={()=>{console.log("clicked")}}>{item.category}
+                </button>
+              </td>
               <td className="px-6 py-4">{item.description}</td>
               <td className="px-6 py-4">{item.amount}</td>
+            
               </tr>
+             
               ))}
             <tr>
               <td
