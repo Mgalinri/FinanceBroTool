@@ -23,15 +23,7 @@ async function fetchAdd(info){
  }
 
  function alertText(total){
-    //alert text element
-  const alert_element = document.getElementById("alert")
-  let alert_text = "The total of needs, savings, and wants must add up to 100%"
-  // Validate total
-  
-  if (total !== 100) {
-    alert_element.innerHTML=alert_text
-    return;
-  }
+
  }
 
 
@@ -45,8 +37,14 @@ async function fetchAdd(info){
   const wants = parseInt(form.wants.value);
    
   const total = needs + savings + wants;
-  alertText(total)
-  
+
+  // Validate total
+  if (total !== 100) {
+    const alert_element = document.getElementById("alert")
+    let alert_text = "The total of needs, savings, and wants must add up to 100%"
+    alert_element.innerHTML=alert_text
+    return;
+  }
 
   const body = JSON.stringify({
     email: email,
@@ -59,8 +57,8 @@ async function fetchAdd(info){
 
   fetchAdd(body).then((response) => {
     if (response.status === 200) {
-      alert("Percentages Added");
-      navigate("/dashboard");
+      alert("Percentages Added. Redirecting to login.");
+      navigate("/login");
     } else {
       alert("Percentages Failed to Add");
     }

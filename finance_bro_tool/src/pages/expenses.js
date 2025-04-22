@@ -14,6 +14,8 @@ import MenuBar from "../components/menuBar";
 import Add from "../components/add";
 import AddForm from "../components/addForm";
 
+//TODO: delete expenses
+
 function ExpenseTable() {
 
   const [expenses, setExpenses] = useState([]);

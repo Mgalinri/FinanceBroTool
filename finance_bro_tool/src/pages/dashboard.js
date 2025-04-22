@@ -13,6 +13,8 @@ import { jwtDecode } from "jwt-decode";
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
 
+//TODO: delete expenses
+
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
   const [income, setIncome] = useState(0);
