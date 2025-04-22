@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, BeforeValidator
 from bson.objectid import ObjectId
@@ -78,6 +78,15 @@ async def get_user(email: str):
         return UserInDB(**user_dict)
     return None
 
+async def get_expenses(email: str) -> List[UserExpensesInDB]:
+    cursor = user_expense_collection.find({"userid": email})
+    expenses = []
+    
+    async for doc in cursor:
+        expenses.append(UserExpensesInDB(**doc))
+    
+    return expenses
+
 # Register User
 
 async def create_user(user):
@@ -141,10 +150,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def fetch_one_user_on_email(email):
-    user_document = await user_collection.find_one({"email": email})
-    return user_document
-
 def get_password_hash(password):
     """Hashes the password using bcrypt algorithm \n
     Parameters
@@ -200,3 +205,7 @@ async def get_current_active_user(
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+async def fetch_one_user_on_email(email):
+    user_document = await user_collection.find_one({"email": email})
+    return user_document

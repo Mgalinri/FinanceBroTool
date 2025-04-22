@@ -2,7 +2,7 @@
 
 #Python Imports
 from datetime import timedelta
-from typing import Annotated
+from typing import Annotated, List
 
 #Fast API imports
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -23,7 +23,8 @@ from model import (
     set_user_income,
     set_user_percentages,
     UserExpensesInDB,
-    set_user_expense
+    set_user_expense,
+    get_expenses
     )
 
 # App object
@@ -100,7 +101,7 @@ async def set_percentages(payload: dict):
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
-# Add Expense
+# Expenses
 
 @app.post("/api/financebrotool/addexpense", response_model=UserExpensesInDB)
 async def add_expense(user_expense: UserExpensesInDB): 
@@ -116,6 +117,13 @@ async def add_expense(user_expense: UserExpensesInDB):
     if response:
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.get("/api/financebrotool/getexpensesbyemail/{email}",  response_model=List[UserExpensesInDB])
+async def get_expenses_by_email(email):
+    response = await get_expenses(email)
+    if response:
+        return response
+    raise HTTPException(404, f"there are no expenses with this email {email}")
 
 # Authenticate User
 
