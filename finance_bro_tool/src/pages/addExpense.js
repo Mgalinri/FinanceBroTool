@@ -52,11 +52,12 @@ function ExpenseForm() {
     console.log("Description entered:", form.description.value);
     console.log("Amount entered:", form.amount.value);
 
-    const body = JSON.stringify({
+    const body = {
+      "userid": "Hello",
       "category": form.categories.value,
       "description": form.description.value,
       "amount": parseInt(form.amount.value),
-    });
+    }
 
     // Handle the form submission (add expense)
     fetchAdd(body)

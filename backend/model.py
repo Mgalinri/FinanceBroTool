@@ -82,7 +82,7 @@ async def get_user(email: str):
 async def get_expenses(email: str) -> List[UserExpensesInDB]:
     cursor = user_expense_collection.find({"userid": email})
     expenses = []
-    print("hello")
+ 
     async for doc in cursor:
         expenses.append(UserExpensesInDB(**doc))
     
