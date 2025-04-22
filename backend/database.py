@@ -6,7 +6,7 @@ load_dotenv()
 import os
 
 # Connect to MongoDB
-client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_DB'))
+client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGO_URI'))
 
 database = client.FinanceBroTool
 user_collection = database.user

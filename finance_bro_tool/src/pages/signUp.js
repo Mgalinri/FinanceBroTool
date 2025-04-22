@@ -26,8 +26,6 @@ function SignUp() {
    
      // Read the form data
      const form = e.target;
-     console.log(form);
-     console.log(form.fName.value);
      const body = JSON.stringify({
       "first_name": form.fName.value,
       "last_name": form.lName.value,

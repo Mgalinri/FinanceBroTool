@@ -8,6 +8,8 @@ from typing import Annotated, Dict, List
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import (OAuth2PasswordRequestForm)
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi import Response
 
 #Internal Imports
 from model import (
@@ -146,7 +148,7 @@ async def get_expenses_by_email(email):
 @app.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> Token:
+):
     """
     Handles the login of the user and returns a JWT token
 
@@ -170,9 +172,24 @@ async def login_for_access_token(
     access_token = create_access_token(
         data={"email": user.email}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer")
+    response = JSONResponse(content="Token set")
+    response.set_cookie(key="access_token", value=f"{access_token}", httponly=True, samesite="Lax", secure=False)
+    response.set_cookie(key="token_type", value="bearer", httponly=True, samesite="Lax",secure=False)
+    return response
 
 # Extras
+@app.post("/logout")
+async def logout(response: Response,):   
+    """Logs out the user by deleting the cookies
+
+    Returns:
+        JSONResponse: _description_
+    """
+
+    #Everything must match with whatever properties you use at the time of setting them
+    response.delete_cookie(key="access_token",httponly=True, samesite="Lax")
+    response.delete_cookie(key="token_type", httponly=True, samesite="Lax")
+    return {"message": "Logged out"}
 
 @app.get("/api/financebrotool{email}", response_model=User)
 async def get_user_by_email(email):

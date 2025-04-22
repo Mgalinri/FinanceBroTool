@@ -18,6 +18,7 @@ function Login() {
    const response = await fetch(process.env.REACT_APP_API_URL+"/token", {
       method: "POST",
       body: info,
+      credentials: "include",
     });
     return Promise.resolve(response);
   }
@@ -42,20 +43,15 @@ function Login() {
     const formData = prepareFormData(e)
 
      fetchLogin(formData)
-     .then((response) => response.json())
-     .then((data) => {
-      if (data.access_token) {
-        localStorage.setItem("token", data.access_token);
+     .then((response) => {
+      if (response.status === 200) {
+        // Handle successful login here (e.g., store token, redirect, etc.)
         alert("Login successful");
-        navigate("/dashboard");
+        //navigate("/dashboard");
       } else {
         alert("Login failed");
       }
-     })
-     .catch((error) => {
-       console.error("Login error:", error);
-       alert("Login failed");
-     });
+    })
     
   }
   

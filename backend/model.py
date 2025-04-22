@@ -8,6 +8,7 @@ from fastapi.security import(
 )
 import jwt
 from pydantic import BaseModel
+from fastapi import Request
 from jwt.exceptions import InvalidTokenError
 import motor.motor_asyncio
 import os 
@@ -196,7 +197,14 @@ async def remove_user(id):
     await user_collection.delete_one({"email":id})
     return True
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+def get_token_from_cookie(request:Request):
+    "Gets the token from the cookie in the request\n"
+    token = request.cookies.get("access_token")
+    if request.cookies.get("access_token") is None:
+        raise HTTPException(status_code=401, detail="Token not found in cookies")
+    return token
+
+async def get_current_user(token: Annotated[str, Depends(get_token_from_cookie)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

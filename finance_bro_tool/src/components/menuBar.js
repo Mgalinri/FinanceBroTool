@@ -12,11 +12,21 @@ import { useNavigate } from 'react-router-dom';
 function MenuBar() {
   const navigate = useNavigate();
 
+  //Function to handle logout
+
+  async function fetchLogout(){
+    const response = await fetch(process.env.REACT_APP_API_URL+"/logout", {
+       method: "POST",
+       credentials: "include",
+     });
+     return Promise.resolve(response);
+   }
   const handleLogout = () => {
+    fetchLogout().then((response) => {
+    console.log(response.status);
     if (window.confirm("Are you sure you want to logout?") === true){
-      localStorage.removeItem("token");
       navigate("/login");
-    }
+    }})
   };
 
  return (

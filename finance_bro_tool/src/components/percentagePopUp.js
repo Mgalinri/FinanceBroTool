@@ -8,6 +8,7 @@ import Grid from "../components/grid";
 function PercentagePopUp(){
 const navigate = useNavigate();
 
+//Set the email another way
 const email = localStorage.getItem("storedEmail");
 console.log("email:" + email);
 
