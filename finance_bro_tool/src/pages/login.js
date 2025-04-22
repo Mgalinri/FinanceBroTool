@@ -1,19 +1,21 @@
 //React Imports
 import { useNavigate } from "react-router-dom";
-
+import { use, useContext } from "react";
+import { useEffect } from "react";
 //External Imports
 import {Link } from "react-router";
 
 //Internal Imports
 import TextBox  from "../components/textBoxes";
-
+import { AuthContext } from "../authContext";
 //React Imports
 
 
 
 function Login() {
   const navigate = useNavigate();
-
+  // For authorization
+  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
   async function fetchLogin(info){
    const response = await fetch(process.env.REACT_APP_API_URL+"/token", {
       method: "POST",
@@ -38,7 +40,7 @@ function Login() {
     /*Handles the response to submitting the login */
     // Prevent the browser from reloading the page
     e.preventDefault();
-   
+  
      // Read the form data
     const formData = prepareFormData(e)
 
@@ -47,7 +49,9 @@ function Login() {
       if (response.status === 200) {
         // Handle successful login here (e.g., store token, redirect, etc.)
         alert("Login successful");
-        //navigate("/dashboard");
+       
+        navigate("/dashboard");
+       
       } else {
         alert("Login failed");
       }
@@ -55,6 +59,8 @@ function Login() {
     
   }
   
+ 
+
   return (
     <div className="flex flex-col items-center justify-center  h-screen w-100">
     <header>

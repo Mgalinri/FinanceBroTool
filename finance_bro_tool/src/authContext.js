@@ -1,4 +1,6 @@
 import {createContext } from 'react';
 
 //Takes in a default value
-export const AuthContext = createContext();
+export const AuthContext = createContext([
+    true,()=>{}
+]);

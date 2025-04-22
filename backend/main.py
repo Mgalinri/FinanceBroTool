@@ -49,6 +49,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Register User
 
+#For authorization use depend on current_user
+
 @app.post("/api/financebrotool/createaccount", response_model=User)
 async def register_user(user: UserInDB): 
     """To create a user account in the database
@@ -105,24 +107,26 @@ async def set_percentages(payload: dict):
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
-@app.get("/api/financebrotool/getpercentagesbyemail/{email}", response_model=Dict[str, int])
-async def get_percentages_by_email(email: str):
-    response = await get_percentages(email)  # Make sure this returns only the percentages as a dict
+@app.get("/api/financebrotool/getpercentages/", response_model=Dict[str, int])
+async def get_percentages_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
+    print(current_user.email)
+    response = await get_percentages(current_user.email)  # Make sure this returns only the percentages as a dict
+    print(response)
     if response:
         return response
-    raise HTTPException(404, detail=f"There are no percentages for the email {email}")
+    raise HTTPException(403, detail=f"There are no percentages for the email {current_user.email}")
 
-@app.get("/api/financebrotool/getincomebyemail/{email}", response_model=int)
-async def get_income_by_email(email: str):
-    response = await get_income(email)  # Make sure this returns only the percentages as a dict
+@app.get("/api/financebrotool/getincome/", response_model=int)
+async def get_income_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
+    response = await get_income(current_user.email)  # Make sure this returns only the percentages as a dict
     if response:
         return response
-    raise HTTPException(404, detail=f"There is no income for the email {email}")
+    raise HTTPException(404, detail=f"There is no income for the email {current_user.email}")
 
 # Expenses
 
 @app.post("/api/financebrotool/addexpense", response_model=UserExpensesInDB)
-async def add_expense(user_expense: UserExpensesInDB): 
+async def add_expense(current_user: Annotated[User, Depends(get_current_active_user)],elements: dict): 
 
     # if not email or percentages is None:
     #     raise HTTPException(status_code=400, detail="Email and percentages are required")
@@ -130,18 +134,22 @@ async def add_expense(user_expense: UserExpensesInDB):
     # user = await get_user(userid)
     # if user is None:
     #     raise HTTPException(status_code=404, detail="User not found")
-
-    response = await set_user_expense(user_expense.model_dump())
+    print(current_user.email)
+    elements['userid']=current_user.email
+    print(elements)
+  
+    response = await set_user_expense(elements)
     if response:
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
-@app.get("/api/financebrotool/getexpensesbyemail/{email}",  response_model=List[UserExpensesInDB])
-async def get_expenses_by_email(email):
-    response = await get_expenses(email)
+@app.get("/api/financebrotool/getexpenses/",  response_model=List[UserExpensesInDB])
+async def get_expenses_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
+    print('hi')
+    response = await get_expenses(current_user.email)
     if response:
         return response
-    raise HTTPException(404, f"there are no expenses with this email {email}")
+    raise HTTPException(404, f"there are no expenses with this email {current_user.email}")
 
 # Authenticate User
 

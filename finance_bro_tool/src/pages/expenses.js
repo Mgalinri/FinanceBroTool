@@ -29,11 +29,14 @@ function ExpenseTable() {
       return;
     }
     const email = jwtDecode(token).email;
-    const url = process.env.REACT_APP_API_URL+`/api/financebrotool/getexpensesbyemail/${email}`
+    const url = process.env.REACT_APP_API_URL+`/api/financebrotool/getexpenses/`
 
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get(url);
+        const res = await axios.get(url,{
+          withCredentials: true,
+         
+        });
         setExpenses(res.data);
       } catch (error) {
         console.error("Failed to fetch expenses:", error);

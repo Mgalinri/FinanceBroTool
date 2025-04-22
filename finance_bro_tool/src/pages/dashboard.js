@@ -36,7 +36,9 @@ function Dashboard() {
     const fetchExpenses = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/financebrotool/getexpensesbyemail/${email}`
+          `${process.env.REACT_APP_API_URL}/api/financebrotool/getexpenses/`,{
+            withCredentials: true 
+          }
         );
         setExpenses(res.data);
       } catch (error) {
@@ -47,7 +49,9 @@ function Dashboard() {
     const fetchPercentages = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/financebrotool/getpercentagesbyemail/${email}`
+        `${process.env.REACT_APP_API_URL}/api/financebrotool/getpercentages/`,{
+          withCredentials: true
+        }
         );
         setPercentages(res.data);
       } catch (error) {
@@ -58,7 +62,9 @@ function Dashboard() {
     const fetchIncome = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/financebrotool/getincomebyemail/${email}`
+          `${process.env.REACT_APP_API_URL}/api/financebrotool/getincome/`,{
+            withCredentials: true
+          }
         );
         setIncome(res.data);
       } catch (error) {

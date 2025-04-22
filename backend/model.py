@@ -82,7 +82,7 @@ async def get_user(email: str):
 async def get_expenses(email: str) -> List[UserExpensesInDB]:
     cursor = user_expense_collection.find({"userid": email})
     expenses = []
-    
+    print("hello")
     async for doc in cursor:
         expenses.append(UserExpensesInDB(**doc))
     
@@ -199,6 +199,8 @@ async def remove_user(id):
 
 def get_token_from_cookie(request:Request):
     "Gets the token from the cookie in the request\n"
+   
+    print(request.cookies.get("access_token"))
     token = request.cookies.get("access_token")
     if request.cookies.get("access_token") is None:
         raise HTTPException(status_code=401, detail="Token not found in cookies")
@@ -218,7 +220,7 @@ async def get_current_user(token: Annotated[str, Depends(get_token_from_cookie)]
         token_data = TokenData(username= username)
     except InvalidTokenError:
         raise credentials_exception
-    user = get_user(username=token_data.username)
+    user = await get_user(email=username)
     if user is None:
         raise credentials_exception
     return user
@@ -227,8 +229,7 @@ async def get_current_user(token: Annotated[str, Depends(get_token_from_cookie)]
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+  
     return current_user
 
 async def fetch_one_user_on_email(email):

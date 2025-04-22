@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 //External Imports
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 //Internal Imports
 import TextBox  from "../components/textBoxes";
@@ -11,17 +12,23 @@ const categories = ["Essential Needs","Savings","Splurges/Wants"];
 
 function ExpenseForm() {
   const navigate = useNavigate();
-
-  async function fetchAdd(info) {
-    const response = await fetch(process.env.REACT_APP_API_URL + "/api/financebrotool/addexpense", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: info,
-    });
-    return Promise.resolve(response);
-  }
+ 
+  async function fetchAdd(info){
+    console.log("Sending data:", info);
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/financebrotool/addexpense`, info ,{
+          withCredentials: true,
+        }
+      );
+      return Promise.resolve(res);
+    } catch (error) {
+      console.error("Failed to Add expenses:", error);
+    }
+   
+  };
+  
+  
 
   function handleSubmit(e) {
     // Prevent the browser from reloading the page
@@ -46,7 +53,6 @@ function ExpenseForm() {
     console.log("Amount entered:", form.amount.value);
 
     const body = JSON.stringify({
-      "userid": decoded.email,
       "category": form.categories.value,
       "description": form.description.value,
       "amount": parseInt(form.amount.value),
