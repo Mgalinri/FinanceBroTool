@@ -13,35 +13,60 @@ import { jwtDecode } from "jwt-decode";
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
 
-// Sample percentages
-const essentialProgress = 60;
-const savingsProgress = 40;
-const splurgesProgress = 30;
-
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
-  //const [email, setEmail] = useState("");
+  const [income, setIncome] = useState(0);
+  const [percentages, setPercentages] = useState({
+    needs: 0,
+    savings: 0,
+    wants: 0
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       alert("No token found");
       return;
     }
+
     const email = jwtDecode(token).email;
-    const url = process.env.REACT_APP_API_URL+`/api/financebrotool/getexpensesbyemail/${email}`
 
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get(url);
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/financebrotool/getexpensesbyemail/${email}`
+        );
         setExpenses(res.data);
       } catch (error) {
         console.error("Failed to fetch expenses:", error);
       }
     };
 
+    const fetchPercentages = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/financebrotool/getpercentagesbyemail/${email}`
+        );
+        setPercentages(res.data);
+      } catch (error) {
+        console.error("Failed to fetch percentages:", error);
+      }
+    };
+
+    const fetchIncome = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/financebrotool/getincomebyemail/${email}`
+        );
+        setIncome(res.data);
+      } catch (error) {
+        console.error("Failed to fetch percentages:", error);
+      }
+    };
+
     fetchExpenses();
+    fetchPercentages();
+    fetchIncome();
   }, []);
 
   // debugging log
@@ -49,10 +74,40 @@ function Dashboard() {
     console.log("Updated expenses:", expenses);
   }, [expenses]);
 
+  // debugging log
+  useEffect(() => {
+    console.log("Updated percentages:", percentages);
+  }, [percentages]);
+
+  // debugging log
+  useEffect(() => {
+    console.log("Updated income:", income);
+  }, [income]);
+
   const essentialNeedsExpenses = expenses.filter((e) => e.category === "Essential Needs");
   const savingsExpenses = expenses.filter((e) => e.category === "Savings");
   const splurgesExpenses = expenses.filter((e) => e.category === "Splurges/Wants");
 
+  // calculations for essential needs, savings, and wants
+  // probably should clean this up and put into functions
+  const essentialNeedsTotal = essentialNeedsExpenses.reduce(
+    (total, expense) => total + expense.amount,
+    0
+  );
+  const essentialNeedsProgress = Math.round(100 - ((income * (percentages.needs / 100) - essentialNeedsTotal) / (income * (percentages.needs / 100))) * 100);
+
+  const savingsTotal = savingsExpenses.reduce(
+    (total, expense) => total + expense.amount,
+    0
+  );
+  const savingsProgress = Math.round(100 - ((income * (percentages.savings / 100) - savingsTotal) / (income * (percentages.savings / 100))) * 100);
+
+  const splurgesTotal = splurgesExpenses.reduce(
+    (total, expense) => total + expense.amount,
+    0
+  );
+  const splurgesProgress = Math.round(100 - ((income * (percentages.wants / 100) - splurgesTotal) / (income * (percentages.wants / 100))) * 100);
+  
   return (
     <div className="flex flex-row h-screen gap-4">
       <MenuBar />
@@ -63,8 +118,8 @@ function Dashboard() {
         <div className="flex-1 bg-white shadow-md rounded-lg border border-primary p-4 flex flex-col items-center">
           <div className="w-24 h-24 mb-4">
             <CircularProgressbar
-              value={essentialProgress}
-              text={`${essentialProgress}%`}
+              value={essentialNeedsProgress}
+              text={`${essentialNeedsProgress}%`}
               styles={buildStyles({
                 textColor: "#3B82F6",
                 pathColor: "#3B82F6",

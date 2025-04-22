@@ -2,7 +2,7 @@
 
 #Python Imports
 from datetime import timedelta
-from typing import Annotated, List
+from typing import Annotated, Dict, List
 
 #Fast API imports
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -11,7 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 #Internal Imports
 from model import (
-    User, 
+    User,
+    get_income,
+    get_percentages, 
     get_user,
     get_current_active_user,
     Token,
@@ -100,6 +102,20 @@ async def set_percentages(payload: dict):
     if response:
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.get("/api/financebrotool/getpercentagesbyemail/{email}", response_model=Dict[str, int])
+async def get_percentages_by_email(email: str):
+    response = await get_percentages(email)  # Make sure this returns only the percentages as a dict
+    if response:
+        return response
+    raise HTTPException(404, detail=f"There are no percentages for the email {email}")
+
+@app.get("/api/financebrotool/getincomebyemail/{email}", response_model=int)
+async def get_income_by_email(email: str):
+    response = await get_income(email)  # Make sure this returns only the percentages as a dict
+    if response:
+        return response
+    raise HTTPException(404, detail=f"There is no income for the email {email}")
 
 # Expenses
 

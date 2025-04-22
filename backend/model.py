@@ -87,6 +87,23 @@ async def get_expenses(email: str) -> List[UserExpensesInDB]:
     
     return expenses
 
+async def get_percentages(email: str):
+    # tells mongo to excluse _id and only pull percentages object
+    user = await user_collection.find_one({"email": email}, {"_id": 0, "percentages": 1})
+    
+    if user and "percentages" in user:
+        return user["percentages"]
+    return None
+
+async def get_income(email: str):
+    # tells mongo to excluse _id and only pull percentages object
+    user = await user_collection.find_one({"email": email}, {"_id": 0, "income": 1})
+    
+    if user and "income" in user:
+        return user["income"]
+    return None
+
+
 # Register User
 
 async def create_user(user):
