@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 //Internal Imports
 import Grid from "../components/grid";
-
+import PopUpFrame from "../components/popUpFrame";
 
 function PercentagePopUp(){
 const navigate = useNavigate();
@@ -67,13 +67,14 @@ async function fetchAdd(info){
 }
   
 return (
-  <div className="flex flex-col  items-center justify-center   h-screen w-100">
+
+  <PopUpFrame>
   <form method="post" onSubmit={handleSubmit} className="flex  flex-col items-center justify-center w-[576px] p-4">
 
   <div className="w-full flex flex-col  items-center
    ">
   <header>
-     <h1 className="text-secondary text-2xl font-black  mb-10">What Percentage Do You Want to Assign into the Following?</h1>
+     <h1 className="text-white text-2xl font-black  mb-10">What Percentage Do You Want to Assign into the Following?</h1>
   </header>
   
  <Grid />
@@ -82,7 +83,7 @@ return (
   </div>
   </form>
 
-</div>
+</PopUpFrame>
 
 )}
 

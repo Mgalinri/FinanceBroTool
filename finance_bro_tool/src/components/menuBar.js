@@ -7,6 +7,7 @@ import { Link } from 'react-router';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { useNavigate } from 'react-router-dom';
+import PercentagePopUp from './percentagePopUp';
 
 //To-do: Add functionality to the settings, they must allow for a change in the percentage
 function MenuBar() {
@@ -45,7 +46,7 @@ function MenuBar() {
                   nested
                   position="right center"
                 >
-      
+         <PercentagePopUp/>
     </Popup>
  <button></button>
 

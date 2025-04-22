@@ -7,7 +7,7 @@ import axios from "axios";
 
 //Internal Imports
 import TextBox  from "./textBoxes";
-
+import PopUpFrame from "./popUpFrame";
 const categories = ["Essential Needs","Savings","Splurges/Wants"];
 
 function ExpenseForm() {
@@ -76,11 +76,10 @@ function ExpenseForm() {
   }
 
   return (
-    <div className="flex flex-col rounded-lg bg-primary  items-center justify-center ">
-      <header>
+    <PopUpFrame >
+         <header>
         <h1 className="text-white font-black text-xl mt-4 ">Add Expense</h1>
       </header>
-
       <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center w-1/2 p-4">
         <label className="text-white font-bold self-start" htmlFor="categories"></label>
         <select id="categories" name="categories" className="border w-full border-gray-300 p-2 rounded-lg">
@@ -122,7 +121,8 @@ function ExpenseForm() {
           Add Expense
         </button>
       </form>
-    </div>
+      </PopUpFrame>
+    
   );
 }
 
