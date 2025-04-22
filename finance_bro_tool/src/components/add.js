@@ -2,29 +2,30 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import { Link } from "react-router";
+
 
 //Internal Imports
-import MenuBar from "../components/menuBar";
-import AddForm from "../components/addForm";
+
+import AddExpense from "./addExpense";
 
 function Add(){
+  const contentStyle = { background: 'transparent', border:'none'};
+const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
 return(
     <div className='absolute top-0 right-0 p-4'>
-    {/* <Popup
+ 
+     <Popup
                   trigger={ <AddCircleIcon fontSize='large' className="text-primary  hover:text-primary cursor-pointer" />}
                   modal
                   nested
                   position="right center"
+                  {...{contentStyle, overlayStyle }}
                 >
-                  <AddForm/>
+                  <AddExpense/>
                   
-                </Popup> */}
+                </Popup> 
 
-                {/* Temporary route until popup works */}
-                <Link className="w-full" to="/addExpense">
-                <AddCircleIcon fontSize='large' className="text-primary  hover:text-primary cursor-pointer" />
-                </Link>
+                
     </div>
 )
 }

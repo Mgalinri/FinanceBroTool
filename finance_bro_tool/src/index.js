@@ -8,7 +8,6 @@ import Login from './pages/login';
 import SignUp from './pages/signUp';
 import Income from './pages/income';
 import Percentages from './pages/percentages';
-import ExpenseForm from './pages/addExpense';
 import Dashboard from './pages/dashboard';
 import Page404 from './pages/404';
 import ExpenseTable from './pages/expenses';
@@ -30,7 +29,6 @@ let router = createBrowserRouter([
       {path: 'dashboard', element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       {path: 'income', element: <ProtectedRoute><Income /></ProtectedRoute> },
       {path: 'percentages', element: <ProtectedRoute><Percentages /></ProtectedRoute> },
-      {path: 'addExpense', element: <ProtectedRoute><ExpenseForm /></ProtectedRoute>},
       {path: 'expenseTable', element: <ProtectedRoute><ExpenseTable /></ProtectedRoute>}
     ],
    

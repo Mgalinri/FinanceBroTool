@@ -12,6 +12,7 @@ import { jwtDecode } from "jwt-decode";
 // Internal Imports
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
+import AddForm from "../components/addExpense";
 
 //TODO: delete expenses
 
@@ -25,13 +26,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("No token found");
-      return;
-    }
-
-    const email = jwtDecode(token).email;
+   
 
     const fetchExpenses = async () => {
       try {

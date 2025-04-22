@@ -23,9 +23,8 @@ function MenuBar() {
    }
   const handleLogout = () => {
     fetchLogout().then((response) => {
-    console.log(response.status);
     if (window.confirm("Are you sure you want to logout?") === true){
-      navigate("/login");
+      navigate("/");
     }})
   };
 

@@ -12,18 +12,19 @@ import { jwtDecode } from "jwt-decode";
 //Internal Imports
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
-import AddForm from "../components/addForm";
+import AddForm from "../components/addExpense";
 
 //TODO: delete expenses
 
 function ExpenseTable() {
-
+  const contentStyle = { background: 'transparent', border:'none'};
+  const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
   const [expenses, setExpenses] = useState([]);
   //const [email, setEmail] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
+    
     if (!token) {
       alert("No token found");
       return;
@@ -92,6 +93,7 @@ function ExpenseTable() {
                   modal
                   nested
                   position="right center"
+                  {...{contentStyle, overlayStyle }}
                 >
                   <AddForm/>
                 </Popup>

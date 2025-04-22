@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 //Internal Imports
-import TextBox  from "../components/textBoxes";
+import TextBox  from "./textBoxes";
 
 const categories = ["Essential Needs","Savings","Splurges/Wants"];
 
@@ -76,13 +76,13 @@ function ExpenseForm() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-100">
+    <div className="flex flex-col rounded-lg bg-primary  items-center justify-center ">
       <header>
-        <h1 className="text-primary font-black text-xl">Add Expense</h1>
+        <h1 className="text-white font-black text-xl mt-4 ">Add Expense</h1>
       </header>
 
       <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center w-1/2 p-4">
-        <label className="text-secondary font-bold self-start" htmlFor="categories"></label>
+        <label className="text-white font-bold self-start" htmlFor="categories"></label>
         <select id="categories" name="categories" className="border w-full border-gray-300 p-2 rounded-lg">
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -90,11 +90,35 @@ function ExpenseForm() {
             </option>
           ))}
         </select>
+        <label
+        className=" text-white font-bold self-start pt-4"
+        htmlFor="description"
+      >
+        Description
+      </label>
+      <input
+        type="text"
+        name="description"
+        id="description"
+        placeholder="Walmart"
+        className="border w-full  border-gray-300 p-2 rounded-lg"
+      />
+         <label
+        className=" text-white font-bold self-start pt-4 "
+        htmlFor="amount"
+      >
+        Amount
+      </label>
+      <input
+        type="number"
+        name="amount"
+        id="amount"
+        placeholder="1599.99"
+        className="border w-full  border-gray-300 mb-4 rounded-lg"
+      />
+       
 
-        <TextBox id_="description" name="description" label="Description" placeholder="Walmart" type="text" />
-        <TextBox id_="amount" name="amount" label="Amount" placeholder="120" type="number" />
-
-        <button type="submit" className="rounded h-10 text-white font-bold bg-secondary w-1/4">
+        <button type="submit" className="rounded h-10  text-white font-bold bg-secondary w-10/12">
           Add Expense
         </button>
       </form>
