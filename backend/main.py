@@ -13,6 +13,7 @@ from fastapi import Response
 
 #Internal Imports
 from model import (
+    UserExpense,
     User,
     get_income,
     get_percentages, 
@@ -41,6 +42,7 @@ app.add_middleware(
     CORSMiddleware, 
     allow_origins=["http://localhost:3000"],
     allow_credentials = True,
+    
     allow_methods = ['*'],
     allow_headers = ['*'],
 )
@@ -143,21 +145,20 @@ async def add_expense(current_user: Annotated[User, Depends(get_current_active_u
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
-@app.post("/api/financebrotool/deletexpense", response_model=UserExpensesInDB)
-async def delete_expense(current_user: Annotated[User, Depends(get_current_active_user)],user_expense: UserExpensesInDB):
+@app.delete("/api/financebrotool/deleteexpense/{id}")
+async def deleteExpense(
+    id,
+    current_user: Annotated[User, Depends(get_current_active_user)]):
     """To delete a user expense from the database
 
     Args:
         user (UserInDB): _description_
     """
-     #Converts the user model to a dictionary
-    existing_user = await get_user(current_user.email)
-    deleted_expense = await delete_expense(current_user.email,user_expense.category,user_expense.description,user_expense.amount) #Check if the user already exists in the database, returns None if it does not
+    deleted_expense = await delete_expense(id) #Check if the user already exists in the database, returns None if it does not
     return deleted_expense
 
-@app.get("/api/financebrotool/getexpenses/",  response_model=List[UserExpensesInDB])
+@app.get("/api/financebrotool/getexpenses/",  response_model=List[UserExpense])
 async def get_expenses_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
-    print('hi')
     response = await get_expenses(current_user.email)
     if response:
         return response

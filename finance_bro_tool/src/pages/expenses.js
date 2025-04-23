@@ -1,5 +1,4 @@
 //React Imports
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 
@@ -7,7 +6,6 @@ import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
 //Internal Imports
 import MenuBar from "../components/menuBar";
@@ -15,21 +13,27 @@ import Add from "../components/add";
 import AddForm from "../components/addExpense";
 
 //TODO: delete expenses
-
+//TODO: edit events
 function ExpenseTable() {
   const contentStyle = { background: 'transparent', border:'none'};
   const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
   const [expenses, setExpenses] = useState([]);
-  //const [email, setEmail] = useState("");
-  
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    
-    if (!token) {
-      alert("No token found");
-      return;
+
+  //Delete Expense
+  async function deleteExpense (id){
+    try {
+      const res = await axios.delete(
+        process.env.REACT_APP_API_URL+`/api/financebrotool/deleteexpense/${id}`,{
+          withCredentials: true,
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.error("Failed to delete expense:", error);
     }
-    const email = jwtDecode(token).email;
+  };
+ 
+  useEffect(() => {
+    
     const url = process.env.REACT_APP_API_URL+`/api/financebrotool/getexpenses/`
 
     const fetchExpenses = async () => {
@@ -73,13 +77,13 @@ function ExpenseTable() {
           </thead>
           <tbody>
             {expenses.map((item) => (
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+              <tr id={item._id}className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
               
               <td
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
-                <button onClick={()=>{console.log("clicked")}}>{item.category}
+                <button onClick={()=>{deleteExpense(item._id)}}>{item.category}
                 </button>
               </td>
               <td className="px-6 py-4">{item.description}</td>

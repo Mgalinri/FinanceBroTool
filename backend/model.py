@@ -6,8 +6,10 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import(
     OAuth2PasswordBearer, 
 )
+from typing import Optional, List
 import jwt
-from pydantic import BaseModel
+from pydantic_mongo import AbstractRepository, PydanticObjectId
+from pydantic import BaseModel, Field
 from fastapi import Request
 from jwt.exceptions import InvalidTokenError
 import motor.motor_asyncio
@@ -59,6 +61,14 @@ class UserExpensesInDB(BaseModel):
     description: str | None = None
     amount: int | None = None
 
+class UserExpense(BaseModel):
+    expenseid : Optional[PydanticObjectId] = Field(alias="_id")
+    userid: str | None = None
+    category: str | None = None
+    description: str | None = None
+    amount: int | None = None
+   
+    
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -79,12 +89,13 @@ async def get_user(email: str):
         return UserInDB(**user_dict)
     return None
 
-async def get_expenses(email: str) -> List[UserExpensesInDB]:
+async def get_expenses(email: str) -> List[UserExpense]:
     cursor = user_expense_collection.find({"userid": email})
     expenses = []
- 
+    # Loop through the cursor and create UserExpense objects
+    # using the data from each document
     async for doc in cursor:
-        expenses.append(UserExpensesInDB(**doc))
+        expenses.append(UserExpense(**doc))
     
     return expenses
 
@@ -147,10 +158,28 @@ async def set_user_expense(user_expense_doc):
     return result
 
 # User Authentication
-async def delete_expense(email, category, description, amount):
+async def delete_expense(id):
+    print(f"Deleting expense with id: {id}")
     """Maybe we need to add a date field to the expenses\n"""
-    result = await user_expense_collection.delete_one({"email": email, "category": category, "description": description, "amount": amount})
-    return result
+    id_ = PydanticObjectId(id)
+    print(f"ObjectId: {id_}")
+    result = await user_expense_collection.delete_one({"_id": id_})
+    return (HTTPException(status_code=200, detail="Expense deleted successfully")
+            if result.deleted_count > 0 else HTTPException(status_code=404, detail="Expense not found"))
+
+async def updaete_expense(id, user_expense_doc):
+    """Updates the user expense in the database\n
+    Parameters
+    id (str): The id of the user expense to be updated\n
+    user_expense_doc (dict): The user expense model data\n
+    Return
+    The updated user expense document"""
+    id_ = PydanticObjectId(id)
+    result = await user_expense_collection.update_one({"_id": id_}, {"$set": user_expense_doc})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found or income already up to date")
+    
+    return JSONResponse(content={"message": "Income updated successfully", "modified_count": result.modified_count})
 async def authenticate_user( username: str, password: str):
     user = await get_user(username)
     if not user:
@@ -190,7 +219,6 @@ def verify_password(plain_password, hashed_password):
     Returns:
         _type_: _description_
     """
-    print(plain_password)
     return pwd_context.verify(plain_password, hashed_password)
 
 # Extras we may not need
@@ -203,7 +231,7 @@ async def remove_user(id):
 def get_token_from_cookie(request:Request):
     "Gets the token from the cookie in the request\n"
    
-    print(request.cookies.get("access_token"))
+    
     token = request.cookies.get("access_token")
     if request.cookies.get("access_token") is None:
         raise HTTPException(status_code=401, detail="Token not found in cookies")
