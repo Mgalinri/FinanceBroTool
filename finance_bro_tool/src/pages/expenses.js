@@ -12,7 +12,7 @@ import MenuBar from "../components/menuBar";
 import Add from "../components/add";
 import AddForm from "../components/addExpense";
 
-//TODO: delete expenses
+//TODO: Add Search Bar
 //TODO: edit events
 function ExpenseTable() {
   const contentStyle = { background: 'transparent', border:'none'};
@@ -60,7 +60,11 @@ function ExpenseTable() {
     <div className="text-white h-screen w-full flex flex-row  items-center ">
       <MenuBar />
       <Add />
-      <div className="relative   p-4  pr-6 pl-6 w-screen overflow-x-auto">
+      <div className="w-full flex flex-col items-center justify-center h-full ">
+      <input className="rounded-lg border-s-primary h-9 border-6 mr-1 w-11/12  mb-6 bg-green-300 border-3"/>
+    
+     
+      <div className="relative  rounded-lg bg-primary p-1  mr-1 w-11/12 overflow-x-auto">
         <table className="border rounded-md border-primary table-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-white uppercase bg-primary dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -83,8 +87,31 @@ function ExpenseTable() {
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
-                <button onClick={()=>{deleteExpense(item._id)}}>{item.category}
-                </button>
+                <Popup
+                  trigger={<button className="text-primary">{item.category}</button>}
+                  modal
+                  {...{contentStyle, overlayStyle }}>
+                    
+                     <div className="flex flex-col h-[366px] rounded-lg bg-primary  items-center justify-center ">
+                     <form className="flex flex-col w-3/4 h-full items-center justify-center gap-2"> 
+                  <h1 className="font-black text-white text-2xl">{item.description}</h1>
+                  <label className="text-white text-left font-semibold">Category</label>
+                  <input placeholder={item.category}/>
+                  <label className="text-white self-start ">Amount</label>
+                  <input placeholder={item.amount}/>
+                  <label className="text-white">Description</label>
+                  <input placeholder={item.description}/>
+                  
+                <div className="flex flex-row items-center justify-center gap-2 w-full mt-4">
+                <button type="submit" className="rounded h-10  text-white font-bold bg-secondary w-4/12" onClick={()=>{deleteExpense(item._id)}}>
+                Update</button>
+                <button className="rounded h-10  text-white font-bold bg-red-600 w-4/12" onClick={()=>{deleteExpense(item._id)}}>
+                Delete </button>
+               
+                </div>
+                </form>
+                </div>
+                </Popup>
               </td>
               <td className="px-6 py-4">{item.description}</td>
               <td className="px-6 py-4">{item.amount}</td>
@@ -110,7 +137,9 @@ function ExpenseTable() {
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
+      
     </div>
   );
 }

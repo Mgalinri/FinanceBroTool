@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import  {AuthContext}  from "../authContext";
+import { AuthContext } from "../App";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-    const [isAuthenticated,setIsAuthenticated] = useContext(AuthContext);
+    const {isAuthenticated,setIsAuthenticated} = useContext(AuthContext);
     console.log("isAuthenticated", isAuthenticated);
     if (isAuthenticated) {
         return children;

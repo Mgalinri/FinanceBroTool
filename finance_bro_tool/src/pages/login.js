@@ -1,13 +1,15 @@
 //React Imports
 import { useNavigate } from "react-router-dom";
-import { use, useContext } from "react";
-import { useEffect } from "react";
+import { useContext} from "react";
+
+
 //External Imports
 import {Link } from "react-router";
 
 //Internal Imports
 import TextBox  from "../components/textBoxes";
-import { AuthContext } from "../authContext";
+import { AuthContext } from "../App";
+
 //React Imports
 
 
@@ -15,7 +17,9 @@ import { AuthContext } from "../authContext";
 function Login() {
   const navigate = useNavigate();
   // For authorization
-  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
+  const {isAuthenticated,setIsAuthenticated} = useContext(AuthContext);
+ 
+  setIsAuthenticated(true)
   async function fetchLogin(info){
    const response = await fetch(process.env.REACT_APP_API_URL+"/token", {
       method: "POST",
