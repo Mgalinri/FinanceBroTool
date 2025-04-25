@@ -1,25 +1,23 @@
 //External imports
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
+
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import { Link } from 'react-router';
-import Popup from "reactjs-popup";
+
 import "reactjs-popup/dist/index.css";
 import { useNavigate } from 'react-router-dom';
 import { useContext} from "react";
 
 //Internal imports
-import PercentagePopUp from './percentagePopUp';
 import { AuthContext } from "../App";
-
+import SettingsPopUp from './settingsPopUp';
 
 //To-do: Add functionality to the settings, they must allow for a change in the percentage
 function MenuBar() {
   const navigate = useNavigate();
   const {isAuthenticated,setIsAuthenticated} = useContext(AuthContext);
-  const contentStyle = { background: 'transparent', border:'none'};
-  const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
+  
   //Function to handle logout
 
   async function fetchLogout(){
@@ -48,15 +46,9 @@ function MenuBar() {
    <button className="mt-auto mb-4" onClick={handleLogout}>
    <LogoutIcon fontSize='large'/>
    </button>
-   <Popup
-                  trigger={  <SettingsIcon fontSize='large'/>}
-                  modal
-                  nested
-                  position="right center"
-                  {...{contentStyle, overlayStyle }}
-                >
-         <PercentagePopUp/>
-    </Popup>
+
+         <SettingsPopUp/>
+   
  <button></button>
 
  </div>

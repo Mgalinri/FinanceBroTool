@@ -10,11 +10,10 @@ import Grid from "../components/grid";
 function PercentagePopUp(){
 const navigate = useNavigate();
 
-//Set the email another way
-const email = localStorage.getItem("storedEmail");
-console.log("email:" + email);
+/*
 
 async function fetchAdd(info){
+  
   const response = await fetch(process.env.REACT_APP_API_URL+"/api/financebrotool/setpercentages", {
      method: "POST",
      headers: {
@@ -64,11 +63,11 @@ async function fetchAdd(info){
     }
   });
 }
-  
+  */
 return (
 
   <div className="flex flex-col rounded-lg bg-white w-full items-center justify-center ">
-  <form method="post" onSubmit={handleSubmit} className="flex  flex-col items-center justify-center  p-4">
+  <form method="post"  className="flex  flex-col items-center justify-center  p-4">
 
   <div className="w-full flex flex-col  items-center
    ">

@@ -94,9 +94,7 @@ async def set_income(payload: dict):
 @app.post("/api/financebrotool/setpercentages")
 async def set_percentages(payload: dict): 
     email = payload.get("email")
-    print(email)
     percentages = payload.get("percentages")
-    print(percentages)
 
     if not email or percentages is None:
         raise HTTPException(status_code=400, detail="Email and percentages are required")
@@ -110,6 +108,19 @@ async def set_percentages(payload: dict):
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
+
+@app.post("/api/financebrotool/updatepercentages")
+async def update_percentages(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    percentages: Dict[str, int],
+):
+    current_user_email = current_user.email
+    response = await set_user_percentages(current_user_email, percentages)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+    
+    
 @app.get("/api/financebrotool/getpercentages/", response_model=Dict[str, int])
 async def get_percentages_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
     print(current_user.email)
