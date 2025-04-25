@@ -10,7 +10,7 @@ import {Link } from "react-router";
 import TextBox  from "../components/textBoxes";
 import { AuthContext } from "../App";
 
-//React Imports
+
 
 
 
@@ -19,7 +19,7 @@ function Login() {
   // For authorization
   const {isAuthenticated,setIsAuthenticated} = useContext(AuthContext);
  
-  setIsAuthenticated(true)
+  
   async function fetchLogin(info){
    const response = await fetch(process.env.REACT_APP_API_URL+"/token", {
       method: "POST",
@@ -52,8 +52,8 @@ function Login() {
      .then((response) => {
       if (response.status === 200) {
         // Handle successful login here (e.g., store token, redirect, etc.)
-        alert("Login successful");
-       
+    
+        setIsAuthenticated(true)
         navigate("/dashboard");
        
       } else {

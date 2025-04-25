@@ -7,11 +7,17 @@ import { Link } from 'react-router';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { useNavigate } from 'react-router-dom';
+import { useContext} from "react";
+
+//Internal imports
 import PercentagePopUp from './percentagePopUp';
+import { AuthContext } from "../App";
+
 
 //To-do: Add functionality to the settings, they must allow for a change in the percentage
 function MenuBar() {
   const navigate = useNavigate();
+  const {isAuthenticated,setIsAuthenticated} = useContext(AuthContext);
   const contentStyle = { background: 'transparent', border:'none'};
   const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
   //Function to handle logout
@@ -26,6 +32,7 @@ function MenuBar() {
   const handleLogout = () => {
     fetchLogout().then((response) => {
     if (window.confirm("Are you sure you want to logout?") === true){
+      setIsAuthenticated(false)
       navigate("/");
     }})
   };

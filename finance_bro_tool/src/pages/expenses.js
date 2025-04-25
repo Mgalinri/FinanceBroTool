@@ -11,13 +11,17 @@ import axios from "axios";
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
 import AddForm from "../components/addExpense";
+import SearchBar from "../components/searchBar";
 
 //TODO: Add Search Bar
+//TODO: Add Filter by Category
+
 //TODO: edit events
 function ExpenseTable() {
   const contentStyle = { background: 'transparent', border:'none'};
   const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
   const [expenses, setExpenses] = useState([]);
+  const [filteredExpenses, setFilteredExpenses] = useState([]);
 
   //Delete Expense
   async function deleteExpense (id){
@@ -26,12 +30,24 @@ function ExpenseTable() {
         process.env.REACT_APP_API_URL+`/api/financebrotool/deleteexpense/${id}`,{
           withCredentials: true,
       });
-      console.log(res.data);
+    
     } catch (error) {
       console.error("Failed to delete expense:", error);
     }
   };
- 
+
+  const handleSearch = (event) => {
+    event.preventDefault(); 
+    const searchTerm = event.target.search.value; // Access the search term from the input field
+    if (searchTerm=="") {
+      setFilteredExpenses(expenses) // If the search term is empty, show all expenses
+    }
+    else {
+      console.log("search term", searchTerm)
+
+      const filtered = expenses.filter((exp)=>{ return exp.description.toLowerCase().includes(searchTerm.toLowerCase())})
+      setFilteredExpenses(filtered); 
+  }}// Prevent the default form submission behavior 
   useEffect(() => {
     
     const url = process.env.REACT_APP_API_URL+`/api/financebrotool/getexpenses/`
@@ -43,6 +59,7 @@ function ExpenseTable() {
          
         });
         setExpenses(res.data);
+        setFilteredExpenses(res.data); // Initialize filtered expenses with all expenses
       } catch (error) {
         console.error("Failed to fetch expenses:", error);
       }
@@ -55,20 +72,24 @@ function ExpenseTable() {
   useEffect(() => {
     console.log("Updated expenses:", expenses);
   }, [expenses]);
-
+  
+  
   return (
     <div className="text-white h-screen w-full flex flex-row  items-center ">
       <MenuBar />
+     
       <Add />
+     
       <div className="w-full flex flex-col items-center justify-center h-full ">
-      <input className="rounded-lg border-s-primary h-9 border-6 mr-1 w-11/12  mb-6 bg-green-300 border-3"/>
+
+      <SearchBar click={handleSearch}/>
     
      
       <div className="relative  rounded-lg bg-primary p-1  mr-1 w-11/12 overflow-x-auto">
         <table className="border rounded-md border-primary table-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-white uppercase bg-primary dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3" >
                 Category
               </th>
               <th scope="col" className="px-6 py-3">
@@ -80,12 +101,12 @@ function ExpenseTable() {
             </tr>
           </thead>
           <tbody>
-            {expenses.map((item) => (
-              <tr id={item._id}className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+            {filteredExpenses.map((item) => (
+              <tr id={item._id} key={item._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
               
               <td
                 scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
                 <Popup
                   trigger={<button className="text-primary">{item.category}</button>}

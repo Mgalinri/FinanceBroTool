@@ -167,7 +167,8 @@ async def delete_expense(id):
     return (HTTPException(status_code=200, detail="Expense deleted successfully")
             if result.deleted_count > 0 else HTTPException(status_code=404, detail="Expense not found"))
 
-async def updaete_expense(id, user_expense_doc):
+
+async def update_expense(id, user_expense_doc):
     """Updates the user expense in the database\n
     Parameters
     id (str): The id of the user expense to be updated\n
