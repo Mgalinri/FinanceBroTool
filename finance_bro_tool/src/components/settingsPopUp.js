@@ -15,11 +15,27 @@ function SettingsPopUp() {
   const contentStyle = { background: "transparent", border: "none" };
   const overlayStyle = { background: "rgba(0,0,0,0.5)" };
 
+
+  //Does not work well, need to find a way to return to the main menu
+  //Without having to specificify the parent element of the button
+  /* 
   const menuReturn = (event) => {
     const obtain_div = event.target.parentElement.parentElement;
     obtain_div.style.display = "none";
     document.getElementById("buttons").style.display = "flex";
+  };*/
+
+  const menuReturnIncome = (event)=>{
+    document.getElementById("incomePopUp").style.display = "none";
+    document.getElementById("buttons").style.display = "flex";
+
+  }
+  const menuReturnPercentage = (event)=>{
+    document.getElementById("percentagePopUp").style.display = "none";
+    document.getElementById("buttons").style.display = "flex";
+   
   };
+  
 
   const handlePercentageUpdate = () => {
     document.getElementById("buttons").style.display = "none";
@@ -58,13 +74,13 @@ function SettingsPopUp() {
         </button>
       </div>
       <div id="percentagePopUp" style={{ display: "none" }}>
-        <button onClick={menuReturn}>
+        <button onClick={menuReturnPercentage}>
           <ArrowBackIcon className="text-primary m-4 absolute" />
         </button>
         <PercentagePopUp />
       </div>
       <div id="incomePopUp" style={{ display: "none" }}>
-        <button onClick={menuReturn}>
+        <button onClick={menuReturnIncome}>
           <ArrowBackIcon className="text-primary m-4 absolute" />
         </button>
         <IncomePopUp />

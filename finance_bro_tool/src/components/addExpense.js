@@ -77,10 +77,10 @@ function ExpenseForm() {
   return (
     <div className="flex flex-col rounded-lg bg-primary  items-center justify-center ">
          <header>
-        <h1 className="text-white font-black text-xl mt-4 ">Add Expense</h1>
+        <h1 className="text-white font-black text-xl mt-4 ">Add Event</h1>
       </header>
       <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center w-1/2 p-4">
-        <label className="text-white font-bold self-start" htmlFor="categories"></label>
+        <label className="text-white font-bold " htmlFor="categories"></label>
         <select id="categories" name="categories" className="border w-full border-gray-300 p-2 rounded-lg">
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -89,7 +89,7 @@ function ExpenseForm() {
           ))}
         </select>
         <label
-        className=" text-white font-bold self-start pt-4"
+        className=" text-white font-bold pt-4"
         htmlFor="description"
       >
         Description
@@ -103,10 +103,10 @@ function ExpenseForm() {
         className="border w-full  border-gray-300 p-2 rounded-lg"
       />
          <label
-        className=" text-white font-bold self-start pt-4 "
+        className=" text-white font-bold  pt-4 "
         htmlFor="amount"
       >
-        Amount
+        Amount 
       </label>
       <input
       required

@@ -22,6 +22,7 @@ from model import (
     Token,
     authenticate_user,
     create_access_token,
+    update_expense,
     UserInDB,
     create_user,
     remove_user,
@@ -30,7 +31,8 @@ from model import (
     UserExpensesInDB,
     set_user_expense,
     get_expenses,
-    delete_expense
+    delete_expense,
+    delete_expenses
     )
 
 # App object
@@ -91,11 +93,50 @@ async def set_income(payload: dict):
         return response 
     raise HTTPException(status_code=404, detail="Something went wrong")
 
+@app.post("/api/financebrotool/updateexpense")
+async def updateexpense(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    body: dict): 
+    
+    email = current_user.email
+    print(body)
+    body["userid"] = email
+    print(body)
+    expense_id = body.get("_id")
+    body.pop("_id", None)  # Remove the _id field from the body if it exists
+    response = await update_expense( expense_id,body)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.post("/api/financebrotool/updateincome")
+async def update_income(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    body: dict): 
+    
+    email = current_user.email
+    income = body.get("income")
+
+
+    response = await set_user_income(email, income)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.delete("/api/financebrotool/deleteallExpenses")
+async def delete_all_expenses(
+    current_user: Annotated[User, Depends(get_current_active_user)]):
+    email = current_user.email
+    print(email)
+    deleted_expense = await delete_expenses(email)
+    if deleted_expense: 
+        return deleted_expense
+    raise HTTPException(status_code=404, detail="Something went wrong")
+    
 @app.post("/api/financebrotool/setpercentages")
 async def set_percentages(payload: dict): 
     email = payload.get("email")
     percentages = payload.get("percentages")
-
     if not email or percentages is None:
         raise HTTPException(status_code=400, detail="Email and percentages are required")
 
@@ -112,9 +153,12 @@ async def set_percentages(payload: dict):
 @app.post("/api/financebrotool/updatepercentages")
 async def update_percentages(
     current_user: Annotated[User, Depends(get_current_active_user)],
-    percentages: Dict[str, int],
+    payload: dict,
 ):
+    percentages = payload.get("percentages")
     current_user_email = current_user.email
+    print(payload)
+    print(percentages)
     response = await set_user_percentages(current_user_email, percentages)
     if response:
         return response 
@@ -173,7 +217,7 @@ async def get_expenses_by_email(current_user: Annotated[User, Depends(get_curren
     response = await get_expenses(current_user.email)
     if response:
         return response
-    raise HTTPException(404, f"there are no expenses with this email {current_user.email}")
+    return []  # Return an empty list if no expenses are found
 
 # Authenticate User
 

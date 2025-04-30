@@ -1,5 +1,6 @@
 //React Imports
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 //External imports
@@ -10,8 +11,8 @@ import axios from "axios";
 //Internal Imports
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
-import AddForm from "../components/addExpense";
 import SearchBar from "../components/searchBar";
+import ExpenseForm from "../components/addExpense";
 
 //TODO: Add Search Bar
 //TODO: Add Filter by Category
@@ -20,9 +21,10 @@ import SearchBar from "../components/searchBar";
 function ExpenseTable() {
   const contentStyle = { background: 'transparent', border:'none'};
   const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
+  const categories = ["Essential Needs","Savings","Splurges/Wants"];
   const [expenses, setExpenses] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
-
+  const navigate = useNavigate();
   //Delete Expense
   async function deleteExpense (id){
     try {
@@ -35,6 +37,35 @@ function ExpenseTable() {
       console.error("Failed to delete expense:", error);
     }
   };
+
+  const deleteAll = async () => {
+    try{
+        const response = await axios.delete(process.env.REACT_APP_API_URL+`/api/financebrotool/deleteallExpenses`, {
+            withCredentials: true,});
+        if(response.status === 200){
+            console.log("All entries deleted successfully");
+            setExpenses([]); 
+            setFilteredExpenses([]); // Clear the filtered expenses state after deletion
+            // Clear the expenses state after deletion
+             // Redirect to the expenses page or any other page
+             navigate("/dashboard")
+        }
+    }
+    catch(err){
+        console.log(err);
+    }}
+
+const updateExpense =async (e)=> {
+    e.preventDefault(); // Prevent the default form submission behavior
+    await axios.post(process.env.REACT_APP_API_URL+`/api/financebrotool/updateexpense/`, {
+      _id: e.target._id.value,
+      category: e.target.categories.value,
+      description: e.target.description.value,
+      amount: parseFloat(e.target.amount.value),
+    }
+      ,{
+        withCredentials: true,})
+      navigate("/dashboard")}
 
   const handleSearch = (event) => {
     event.preventDefault(); 
@@ -71,6 +102,7 @@ function ExpenseTable() {
   // debugging log
   useEffect(() => {
     console.log("Updated expenses:", expenses);
+    
   }, [expenses]);
   
   
@@ -82,7 +114,7 @@ function ExpenseTable() {
      
       <div className="w-full flex flex-col items-center justify-center h-full ">
 
-      <SearchBar click={handleSearch}/>
+      <SearchBar click={handleSearch} delete={deleteAll}/>
     
      
       <div className="relative  rounded-lg bg-primary p-1  mr-1 w-11/12 overflow-x-auto">
@@ -114,17 +146,24 @@ function ExpenseTable() {
                   {...{contentStyle, overlayStyle }}>
                     
                      <div className="flex flex-col h-[366px] rounded-lg bg-primary  items-center justify-center ">
-                     <form className="flex flex-col w-3/4 h-full items-center justify-center gap-2"> 
+                     <form onSubmit={updateExpense} className="flex flex-col w-3/4 h-full items-center justify-center gap-2"> 
                   <h1 className="font-black text-white text-2xl">{item.description}</h1>
-                  <label className="text-white text-left font-semibold">Category</label>
-                  <input placeholder={item.category}/>
-                  <label className="text-white self-start ">Amount</label>
-                  <input placeholder={item.amount}/>
-                  <label className="text-white">Description</label>
-                  <input placeholder={item.description}/>
+                  <input value={item._id} id="_id" name="_id" className="hidden"></input>
+                  <label className="text-white font-bold " htmlFor="categories"></label>
+        <select id="categories" name="categories" className="border w-full border-gray-300 p-2 rounded-lg">
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+                  <label className="text-white font-black ">Amount</label>
+                  <input id="amount" name="amount"className="border w-full border-gray-300 p-2 rounded-lg" placeholder={item.amount}/>
+                  <label className="text-white font-black">Description</label>
+                  <input id="description" name="description" className="border w-full border-gray-300 p-2 rounded-lg" placeholder={item.description}/>
                   
                 <div className="flex flex-row items-center justify-center gap-2 w-full mt-4">
-                <button type="submit" className="rounded h-10  text-white font-bold bg-secondary w-4/12" onClick={()=>{deleteExpense(item._id)}}>
+                <button type="submit" className="rounded h-10  text-white font-bold bg-secondary w-4/12" >
                 Update</button>
                 <button className="rounded h-10  text-white font-bold bg-red-600 w-4/12" onClick={()=>{deleteExpense(item._id)}}>
                 Delete </button>
@@ -152,7 +191,7 @@ function ExpenseTable() {
                   position="right center"
                   {...{contentStyle, overlayStyle }}
                 >
-                  <AddForm/>
+                  <ExpenseForm/>
                 </Popup>
               </td>
             </tr>

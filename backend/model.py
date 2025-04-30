@@ -142,6 +142,7 @@ async def set_user_income(email, income):
     return JSONResponse(content={"message": "Income updated successfully", "modified_count": result.modified_count})
 
 async def set_user_percentages(email, percentages):
+    print('percentages', percentages)
     result = await user_collection.update_one(
         {"email": email},
         {"$set": {"percentages": percentages}}
@@ -167,6 +168,15 @@ async def delete_expense(id):
     return (HTTPException(status_code=200, detail="Expense deleted successfully")
             if result.deleted_count > 0 else HTTPException(status_code=404, detail="Expense not found"))
 
+async def delete_expenses(email):
+    """Deletes all expenses for a user\n
+    Parameters
+    email (str): The email of the user whose expenses are to be deleted\n
+    Return
+    The deleted user expense document"""
+    result = await user_expense_collection.delete_many({"userid": email})
+    return (HTTPException(status_code=200, detail="All expenses deleted successfully")
+            if result.deleted_count > 0 else HTTPException(status_code=404, detail="Expenses not found"))
 
 async def update_expense(id, user_expense_doc):
     """Updates the user expense in the database\n

@@ -4,25 +4,22 @@ import {
   buildStyles,
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import axios from "axios";
 
 
 // Internal Imports
 import MenuBar from "../components/menuBar";
 import Add from "../components/add";
+import {IncomeContext} from "../App"
+import { PercentagesContext } from "../App";
+import { useInRouterContext } from "react-router";
 
-
-//TODO: delete expenses
 
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
-  const [income, setIncome] = useState(0);
-  const [percentages, setPercentages] = useState({
-    needs: 0,
-    savings: 0,
-    wants: 0
-  });
+  const {income, setIncome} = useContext(IncomeContext);
+  const {percentages, setPercentages} = useContext(PercentagesContext);
 
   useEffect(() => {
    

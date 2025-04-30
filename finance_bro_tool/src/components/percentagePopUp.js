@@ -1,26 +1,27 @@
 //React Imports
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+
+//External Imports
+import axios from "axios";
 
 //Internal Imports
 import Grid from "../components/grid";
+import { PercentagesContext } from "../App";
 
 
 //To-Do: Add functionality to the settings, they must allow for a change in the percentage
 
 function PercentagePopUp(){
 const navigate = useNavigate();
+const {percentages, setPercentages} = useContext(PercentagesContext)
 
-/*
-
-async function fetchAdd(info){
+async function fetchAdd(percentages){
   
-  const response = await fetch(process.env.REACT_APP_API_URL+"/api/financebrotool/setpercentages", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-     },
-     body: info,
-   });
+  const response = await axios.post(process.env.REACT_APP_API_URL+"/api/financebrotool/updatepercentages", {percentages},{
+    withCredentials: true,}
+   
+   );
    return Promise.resolve(response);
  }
 
@@ -29,7 +30,6 @@ async function fetchAdd(info){
 
  function handleSubmit(e) {
   e.preventDefault();
-
   const form = e.target;
 
   const needs = parseInt(form.needs.value);
@@ -45,29 +45,20 @@ async function fetchAdd(info){
     alert_element.innerHTML=alert_text
     return;
   }
-
-  const body = JSON.stringify({
-    email: email,
-    percentages: {
-      needs,
-      savings,
-      wants,
-    },
-  });
-
-  fetchAdd(body).then((response) => {
-    if (response.status === 200) {
-      alert("Percentages Added successfully");
-    } else {
-      alert("Percentages Failed to Add");
-    }
-  });
-}
-  */
+  console.log("Form data:", form.needs.value);
+  const body = {
+      'needs':needs,
+      'savings':savings,
+      'wants':wants,
+   
+  }
+  setPercentages(body)
+  fetchAdd(body)
+ }
 return (
 
   <div className="flex flex-col rounded-lg bg-white w-full items-center justify-center ">
-  <form method="post"  className="flex  flex-col items-center justify-center  p-4">
+  <form method="post" onSubmit={handleSubmit} className="flex  flex-col items-center justify-center  p-4">
 
   <div className="w-full flex flex-col  items-center
    ">

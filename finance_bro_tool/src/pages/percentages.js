@@ -56,7 +56,7 @@ async function fetchAdd(info){
   fetchAdd(body).then((response) => {
     if (response.status === 200) {
       alert("Percentages Added. Redirecting to login.");
-      navigate("/login");
+      navigate("/");
     } else {
       alert("Percentages Failed to Add");
     }
