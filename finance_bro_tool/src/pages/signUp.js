@@ -66,7 +66,7 @@ function SignUp() {
      <div className="flex flex-col items-center w-1/2 justify-center p-4 gap-2">
      <button type="submit" className="bg-secondary   font-bold text-white w-full p-2 rounded-lg">Sign Up</button>
     
-     <Link className="w-full" to="/login">
+     <Link className="w-full" to="/">
      <button className="bg-secondary   font-bold text-white w-full p-2 rounded-lg">Sign In</button>
      </Link>
      </div>

@@ -65,13 +65,13 @@ async function fetchAdd(info){
   
 return (
 
-  <div className="bg-white w-full h-full flex items-center justify-center">
+  <div className="bg-white w-full h-screen flex items-center justify-center">
   <form method="post" onSubmit={handleSubmit} className="flex  flex-col items-center justify-center w-[576px] p-4">
 
-  <div className="w-full flex flex-col  items-center
+  <div className="w-full flex flex-col  items-center justify-center
    ">
   <header>
-     <h1 className="text-white text-2xl font-black  mb-10">What Percentage Do You Want to Assign into the Following?</h1>
+     <h1 className="text-primary text-2xl font-black  mb-10">What Percentage Do You Want to Assign into the Following?</h1>
   </header>
   
  <Grid />
