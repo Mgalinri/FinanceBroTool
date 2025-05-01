@@ -2,16 +2,25 @@
 import { useNavigate } from "react-router-dom";
 
 //External Imports
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import  {ToastContainer, toast} from "react-toastify";
 
 //Internal Imports
+import Observable from "../observer";
+
 
 const categories = ["Essential Needs","Savings","Splurges/Wants"];
 
 function ExpenseForm() {
   const navigate = useNavigate();
  
+  //For the observer pattern
+  //For the notification system
+
+  function notify(data) {
+     toast(data);
+  }
+
   async function fetchAdd(info){
     console.log("Sending data:", info);
     try {
@@ -35,17 +44,8 @@ function ExpenseForm() {
 
     // Read the form data
     const form = e.target;
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("No token found");
-      return;
-    }
-
-    const decoded = jwtDecode(token);
-
-    console.log(decoded.email);
-
+   
+    
     console.log("Form data:", form);
     console.log("Category selected:", form.categories.value);
     console.log("Description entered:", form.description.value);
@@ -62,10 +62,11 @@ function ExpenseForm() {
     fetchAdd(body)
       .then((response) => {
         if (response.status === 200) {
-          alert("Expense Added");
+          notify("Expense Added Successfully");
           navigate("/dashboard");
         } else {
-          alert("Failed to Add Expense");
+          notify()
+          notify("Failed to Add Expense");
         }
       })
       .catch((error) => {
@@ -76,6 +77,7 @@ function ExpenseForm() {
 
   return (
     <div className="flex flex-col rounded-lg bg-primary  items-center justify-center ">
+         
          <header>
         <h1 className="text-white font-black text-xl mt-4 ">Add Event</h1>
       </header>

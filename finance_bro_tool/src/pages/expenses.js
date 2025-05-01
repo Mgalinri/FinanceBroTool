@@ -32,6 +32,8 @@ function ExpenseTable() {
         process.env.REACT_APP_API_URL+`/api/financebrotool/deleteexpense/${id}`,{
           withCredentials: true,
       });
+    setExpenses(expenses.filter((item) => item._id !== id))
+    setFilteredExpenses(filteredExpenses.filter((item) => item._id !== id))
     
     } catch (error) {
       console.error("Failed to delete expense:", error);
@@ -165,7 +167,7 @@ const updateExpense =async (e)=> {
                 <div className="flex flex-row items-center justify-center gap-2 w-full mt-4">
                 <button type="submit" className="rounded h-10  text-white font-bold bg-secondary w-4/12" >
                 Update</button>
-                <button className="rounded h-10  text-white font-bold bg-red-600 w-4/12" onClick={()=>{deleteExpense(item._id)}}>
+                <button type="button" className="rounded h-10  text-white font-bold bg-red-600 w-4/12" onClick={()=>{deleteExpense(item._id)}}>
                 Delete </button>
                
                 </div>

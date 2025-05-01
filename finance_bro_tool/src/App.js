@@ -12,6 +12,7 @@ import { createContext } from "react";
 //External Imports
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 
 export const AuthContext = createContext();
 export const IncomeContext = createContext();
@@ -61,6 +62,7 @@ function App() {
       <IncomeContext.Provider value={{ income, setIncome }}>
         <PercentagesContext.Provider value={{ percentages, setPercentages }}>
           {/* Wrap your application with the AuthProvider */}
+          <ToastContainer />
           <RouterProvider router={router} />
         </PercentagesContext.Provider>
       </IncomeContext.Provider>
