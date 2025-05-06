@@ -13,8 +13,8 @@ import MenuBar from "../components/menuBar";
 import Add from "../components/add";
 import {IncomeContext} from "../App"
 import { PercentagesContext } from "../App";
-import { ToastContainer, toast } from "react-toastify";
-import Observable from "../observer";
+import {  toast } from "react-toastify";
+
 
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
