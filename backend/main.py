@@ -15,25 +15,27 @@ from fastapi import Response
 from model import (
     UserExpense,
     User,
+    UserInDB,
+    UserExpensesInDB,
+)
+
+from database import (
     get_income,
     get_percentages, 
     get_user,
     get_current_active_user,
-    Token,
     authenticate_user,
     create_access_token,
     update_expense,
-    UserInDB,
-    create_user,
-    remove_user,
-    set_user_income,
-    set_user_percentages,
-    UserExpensesInDB,
     set_user_expense,
     get_expenses,
     delete_expense,
-    delete_expenses
-    )
+    delete_expenses,
+    create_user,
+    remove_user,
+    set_user_income,
+    set_user_percentages
+)
 
 # App object
 app = FastAPI()

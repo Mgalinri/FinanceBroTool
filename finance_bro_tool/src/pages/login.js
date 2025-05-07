@@ -10,10 +10,6 @@ import {Link } from "react-router";
 import TextBox  from "../components/textBoxes";
 import { AuthContext } from "../App";
 
-
-
-
-
 function Login() {
   const navigate = useNavigate();
   // For authorization
@@ -62,8 +58,6 @@ function Login() {
     })
     
   }
-  
- 
 
   return (
     <div className="flex flex-col items-center justify-center  h-screen w-100">
