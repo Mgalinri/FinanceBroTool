@@ -1,0 +1,308 @@
+#APIs/Views will be in this page
+
+#Python Imports
+from datetime import timedelta
+from typing import Annotated, Dict, List
+
+#Fast API imports
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import (OAuth2PasswordRequestForm)
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi import Response
+
+#Internal Imports
+from model import (
+    UserExpense,
+    User,
+    UserInDB,
+    UserExpensesInDB,
+)
+
+from database import (
+    get_income,
+    get_percentages, 
+    get_user,
+    get_current_active_user,
+    authenticate_user,
+    create_access_token,
+    update_expense,
+    set_user_expense,
+    get_expenses,
+    delete_expense,
+    delete_expenses,
+    create_user,
+    remove_user,
+    set_user_income,
+    set_user_percentages
+)
+
+# App object
+app = FastAPI()
+
+# Handles the front-end communication with the backend
+# The origin should the same as the front-end address
+app.add_middleware(
+    CORSMiddleware, 
+    allow_origins=["http://localhost:3000"],
+    allow_credentials = True,
+    
+    allow_methods = ['*'],
+    allow_headers = ['*'],
+)
+
+# Token Settings
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Register User
+
+#For authorization use depend on current_user
+
+@app.post("/api/financebrotool/createaccount", response_model=User)
+async def register_user(user: UserInDB): 
+    """To create a user account in the database
+
+    Args:
+        user (UserInDB): _description_
+    """
+     #Converts the user model to a dictionary
+    existing_user = await get_user(user.email) #Check if the user already exists in the database, returns None if it does not
+    if existing_user!=None:  
+        print("User already exists")
+        raise HTTPException(status_code=400, detail="User already exists with this email") #Returns an error if the user already exists
+    else:
+        response = await create_user(user.model_dump())
+        if response:
+            return response 
+        raise HTTPException(status_code=404, detail="Something went wrong")
+    
+@app.post("/api/financebrotool/setincome")
+async def set_income(payload: dict): 
+    email = payload.get("email")
+    print(email)
+    income = payload.get("income")
+    print(income)
+
+    if not email or income is None:
+        raise HTTPException(status_code=400, detail="Email and income are required")
+
+    user = await get_user(email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    response = await set_user_income(email, income)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.post("/api/financebrotool/updateexpense")
+async def updateexpense(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    body: dict): 
+    
+    email = current_user.email
+    print(body)
+    body["userid"] = email
+    print(body)
+    expense_id = body.get("_id")
+    body.pop("_id", None)  # Remove the _id field from the body if it exists
+    response = await update_expense( expense_id,body)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.post("/api/financebrotool/updateincome")
+async def update_income(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    body: dict): 
+    
+    email = current_user.email
+    income = body.get("income")
+
+
+    response = await set_user_income(email, income)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.delete("/api/financebrotool/deleteallExpenses")
+async def delete_all_expenses(
+    current_user: Annotated[User, Depends(get_current_active_user)]):
+    email = current_user.email
+    print(email)
+    deleted_expense = await delete_expenses(email)
+    if deleted_expense: 
+        return deleted_expense
+    raise HTTPException(status_code=404, detail="Something went wrong")
+    
+@app.post("/api/financebrotool/setpercentages")
+async def set_percentages(payload: dict): 
+    email = payload.get("email")
+    percentages = payload.get("percentages")
+    if not email or percentages is None:
+        raise HTTPException(status_code=400, detail="Email and percentages are required")
+
+    user = await get_user(email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    response = await set_user_percentages(email, percentages)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+
+@app.post("/api/financebrotool/updatepercentages")
+async def update_percentages(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    payload: dict,
+):
+    percentages = payload.get("percentages")
+    current_user_email = current_user.email
+    print(payload)
+    print(percentages)
+    response = await set_user_percentages(current_user_email, percentages)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+    
+    
+@app.get("/api/financebrotool/getpercentages/", response_model=Dict[str, int])
+async def get_percentages_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
+    print(current_user.email)
+    response = await get_percentages(current_user.email)  # Make sure this returns only the percentages as a dict
+    print(response)
+    if response:
+        return response
+    raise HTTPException(403, detail=f"There are no percentages for the email {current_user.email}")
+
+@app.get("/api/financebrotool/getincome/", response_model=int)
+async def get_income_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
+    response = await get_income(current_user.email)  # Make sure this returns only the percentages as a dict
+    if response:
+        return response
+    raise HTTPException(404, detail=f"There is no income for the email {current_user.email}")
+
+# Expenses
+
+@app.post("/api/financebrotool/addexpense", response_model=UserExpensesInDB)
+async def add_expense(current_user: Annotated[User, Depends(get_current_active_user)],user_expense: UserExpensesInDB): 
+
+    # if not email or percentages is None:
+    #     raise HTTPException(status_code=400, detail="Email and percentages are required")
+
+    # user = await get_user(userid)
+    # if user is None:
+    #     raise HTTPException(status_code=404, detail="User not found")
+    user_expense.userid = current_user.email  # Set the user ID to the current user's email
+    user_expense_dict = user_expense.model_dump()
+  
+    response = await set_user_expense(user_expense_dict)
+    if response:
+        return response 
+    raise HTTPException(status_code=404, detail="Something went wrong")
+
+@app.delete("/api/financebrotool/deleteexpense/{id}")
+async def deleteExpense(
+    id,
+    current_user: Annotated[User, Depends(get_current_active_user)]):
+    """To delete a user expense from the database
+
+    Args:
+        user (UserInDB): _description_
+    """
+    deleted_expense = await delete_expense(id) #Check if the user already exists in the database, returns None if it does not
+    return deleted_expense
+
+@app.get("/api/financebrotool/getexpenses/",  response_model=List[UserExpense])
+async def get_expenses_by_email(current_user: Annotated[User, Depends(get_current_active_user)]):
+    response = await get_expenses(current_user.email)
+    if response:
+        return response
+    return []  # Return an empty list if no expenses are found
+
+# Authenticate User
+
+@app.post("/token")
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+):
+    """
+    Handles the login of the user and returns a JWT token
+
+    Args:
+        form_data (Annotated[OAuth2PasswordRequestForm, Depends): _description_
+
+    Raises:
+        HTTPException:401 if the user is not found in the database
+
+    Returns:
+        Token: _description_
+    """
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"email": user.email}, expires_delta=access_token_expires
+    )
+    response = JSONResponse(content="Token set")
+    response.set_cookie(key="access_token", value=f"{access_token}", httponly=True, samesite="Lax", secure=False)
+    response.set_cookie(key="token_type", value="bearer", httponly=True, samesite="Lax",secure=False)
+    return response
+
+# Extras
+@app.post("/logout")
+async def logout(response: Response,):   
+    """Logs out the user by deleting the cookies
+
+    Returns:
+        JSONResponse: _description_
+    """
+
+    #Everything must match with whatever properties you use at the time of setting them
+    response.delete_cookie(key="access_token",httponly=True, samesite="Lax")
+    response.delete_cookie(key="token_type", httponly=True, samesite="Lax")
+    return {"message": "Logged out"}
+
+@app.get("/api/financebrotool{email}", response_model=User)
+async def get_user_by_email(email):
+    """Finds the user in mongo with help of the email
+
+    Args
+        email (_type_): _description_
+
+    Raises
+        HTTPException: 404 if the user is not found in the database
+
+    Returns
+        _type_: json object of the user
+    """
+    response = await get_user(email)
+    if response:
+        return response
+    raise HTTPException(404, f"there is no users item with this email {email}")
+
+@app.get("/users/me/", response_model=User)
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+):
+    return current_user
+
+
+@app.get("/users/me/items/")
+async def read_own_items(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+):
+    return [{"item_id": "Foo", "owner": current_user.email}]
+
+@app.delete("/api/financebrotool{id}")
+async def delete_user(id):
+    response = await remove_user(id)
+    if response:
+        return "Successfully deleted user!"
+    raise HTTPException(404, f"there is no user item with this id {id}")
