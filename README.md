@@ -56,6 +56,8 @@ ALGORITHM = HS256
 
 
 ![ezgif-60a389bf074655](https://github.com/user-attachments/assets/d2f9fab6-15f6-474a-99d7-26e59c080f4d)
+![ezgif-6c5652137bd3e8](https://github.com/user-attachments/assets/d823e080-811e-46c7-b44c-17029f1f54a0)
+
 
 ## Docs and Links
 [FastAPI Security Tutorial](https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model)
