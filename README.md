@@ -5,13 +5,13 @@ A tool made using the **FARM** stack for those who are looking to organize their
 ## Table of Content
 1. Requirements
 2. Installation Guide
-3. Usage Guideline
+3. Features
 4. Docs and Links
 5. License
 
 ## Requirements
 - MongoDB
-- Node.js (For NPM)
+- Node.js (For NPM and React) 
 - Python
 
 ## Installation Guide
@@ -38,11 +38,6 @@ npm install
 npm start
 ```
 
-### Database Setup
-On MongoDB Atlas add this connection
- mongodb+srv://devs:Devel0pers123@farmcluster.sfelu.mongodb.net/?retryWrites=true&w=majority&appName=FARMCluster
-
-## Usage Guideline
 To obtain a SECRET_KEY for hashing and save it in a env file.
 For hashing
 ```
@@ -52,7 +47,22 @@ Also add:
 
 ALGORITHM = HS256
 
+## Features
+- A figma designed UI implemented with TailwindCSS on React.js
+- Authentication and Authorization using JWT tokens
+- A backend that fetches asynchronously from MongoDB using motor
+- A system designed for the user to log in their expenses
+- A dashboard that displays expense analysis
+
+<iframe width="560" height="315" src="finance_bro_tool\2025-05-01 01-55-35.mov" frameborder="0" allowfullscreen></iframe>
+
 ## Docs and Links
-https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model
+[FastApi docs ]https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model
+
+ 
+
 ## License
 This project is licensed under the terms of the MIT license.
+
+## Collaborators
+Grayson Crawford
