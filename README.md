@@ -54,10 +54,12 @@ ALGORITHM = HS256
 - A system designed for the user to log in their expenses
 - A dashboard that displays expense analysis
 
-<iframe width="560" height="315" src="finance_bro_tool\2025-05-01 01-55-35.mov" frameborder="0" allowfullscreen></iframe>
+
+![ezgif-60a389bf074655](https://github.com/user-attachments/assets/d2f9fab6-15f6-474a-99d7-26e59c080f4d)
 
 ## Docs and Links
 [FastAPI Security Tutorial](https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model)
+
 
 
  
