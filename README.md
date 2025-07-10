@@ -57,7 +57,7 @@ ALGORITHM = HS256
 <iframe width="560" height="315" src="finance_bro_tool\2025-05-01 01-55-35.mov" frameborder="0" allowfullscreen></iframe>
 
 ## Docs and Links
-[FastApi docs ] (https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model)
+[FastApi docs] (https://fastapi.tiangolo.com/tutorial/security/get-current-user/#create-a-user-model)
 
  
 
